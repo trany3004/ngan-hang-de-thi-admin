@@ -1,0 +1,77 @@
+<form action="">
+    <div class="d-flex">
+        <div class="d-flex flex-grow-1">
+            <div class="flex-grow-1 mr-5">
+                <mat-form-field class="w-100">
+                    <mat-select placeholder="Select Customer" [(ngModel)]="filter.region" (ngModelChange)="changeRegion()" [ngModelOptions]="{standalone: true}">
+                        <mat-option *ngFor="let region of regions" [value]="region">{{region}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+
+            <div class="flex-grow-1 mr-5">
+                <mat-form-field class="w-100">
+                    <mat-select placeholder="Select City" [ngModelOptions]="{standalone: true}" [(ngModel)]="filter.city">
+                        <mat-option *ngFor="let city of cities" [value]="city">{{city}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+
+            <div class="flex-grow-3 mr-5" *ngIf="!showBrand && !showProgram">
+                <mat-form-field class="w-100">
+                    <mat-select placeholder="Select Outlet/SuperMarket" [(ngModel)]="filter.name" [ngModelOptions]="{standalone: true}">
+                        <mat-option *ngFor="let outlet of outlets" [value]="outlet.name">{{outlet.name}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="d-flex flex-column flex-grow-3 mr-5" *ngIf="showBrand || showProgram">
+                <mat-form-field class="w-100">
+                    <mat-select placeholder="Select Outlet/SuperMarket" [(ngModel)]="filter.name" [ngModelOptions]="{standalone: true}">
+                        <mat-option *ngFor="let outlet of outlets" [value]="outlet.name">{{outlet.name}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field class="w-100" *ngIf="showBrand">
+                    <input matInput placeholder="Brand" [(ngModel)]="filter.brand" [ngModelOptions]="{standalone: true}"
+                    >
+                </mat-form-field>
+                <mat-form-field class="w-100" *ngIf="showProgram">
+                    <input matInput placeholder="Program" [(ngModel)]="filter.program" [ngModelOptions]="{standalone: true}"
+                    >
+                </mat-form-field>
+            </div>
+
+
+            <div class="d-flex flex-column flex-grow-1 mr-5">
+                <mat-form-field>
+                    <input matInput [matDatepicker]="pickerTo" placeholder="From Date" [(ngModel)]="filter.startDate"
+                     [ngModelOptions]="{standalone: true}"
+                    >
+                    <mat-datepicker-toggle matSuffix [for]="pickerTo"></mat-datepicker-toggle>
+                    <mat-datepicker #pickerTo></mat-datepicker>
+                </mat-form-field>
+
+                <mat-form-field>
+                    <input matInput [matDatepicker]="pickerFrom" placeholder="To Date" [(ngModel)]="filter.endDate" [ngModelOptions]="{standalone: true}"
+                    >
+                    <mat-datepicker-toggle matSuffix [for]="pickerFrom"></mat-datepicker-toggle>
+                    <mat-datepicker #pickerFrom></mat-datepicker>
+                </mat-form-field>
+            </div>
+        </div>
+
+        <div class="d-flex flex-column flex-shrink-0 ml-5">
+            <button mat-raised-button class="mb-5" color="primary" (click)="onFilter()">
+                <div class="d-flex align-items-center justify-content-center">
+                    <span>Filter</span>
+                    <span class="material-icons ml-2">filter_alt</span>
+                </div>
+            </button>
+            <button mat-raised-button class="btn-secondary" (click)="clear()">
+                <div class="d-flex align-items-center justify-content-center">
+                    <span>Clear</span>
+                    <span class="material-icons ml-2">clear</span>
+                </div>
+            </button>
+        </div>
+    </div>
+</form>

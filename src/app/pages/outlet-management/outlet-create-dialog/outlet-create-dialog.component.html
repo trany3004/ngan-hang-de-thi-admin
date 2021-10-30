@@ -1,0 +1,39 @@
+<h2 mat-dialog-title>{{title}}</h2>
+<form class="example-form" [formGroup]="formGroup" (submit)="create()">
+
+  <table class="example-full-width" cellspacing="0"><tr>
+    <mat-form-field class="example-full-width" appearance="fill">
+      <mat-label>Tên chủ đề</mat-label>
+   
+      <input matInput formControlName="ten">
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="example-full-width">
+      <mat-label>Môn học</mat-label>
+      <mat-select formControlName="monhoc">
+        <mat-option [value]="option._id" *ngFor="let option of monHocList$ | async">{{option.ten}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="example-full-width">
+      <mat-label>Khối</mat-label>
+      <mat-select formControlName="khoihoc">
+        <mat-option [value]="option._id" *ngFor="let option of khoiHocList$ | async">{{option.ten}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="example-full-width">
+      <mat-label>Chương</mat-label>
+      <mat-select formControlName="chuong">
+        <mat-option [value]="option._id" *ngFor="let option of chuongList$ | async">{{option.ten}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  
+  </tr></table>
+
+  
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Bỏ qua</button>
+  <button mat-button type="submit" cdkFocusInitial>Lưu</button>
+</mat-dialog-actions>
+</form>

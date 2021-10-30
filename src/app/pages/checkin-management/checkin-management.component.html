@@ -1,0 +1,97 @@
+<div class="card card-custom example example-compact gutter-b">
+  <div class="card-header">
+    <div class="card-title">
+      Danh sách cấu hình bài kiểm tra
+    </div>
+    
+   
+    <div class="card-toolbar">
+      <div class="example-tools justify-content-center">
+       
+          <button mat-raised-button color="primary" (click)="createPg()">
+            <span class="material-icons">add</span>Thêm mới
+          </button>
+    
+      </div>
+    </div>
+  </div>
+  <div class="card-body table-responsive">
+    <mat-form-field appearance="standard">
+      <mat-label>Tìm kiếm</mat-label>
+      <input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium" #input>
+    </mat-form-field>
+    
+    <mat-table #table [dataSource]="dataSource" matSort>
+
+      <ng-container matColumnDef="stt">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> ID </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{ element.stt }} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="name">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Tên cấu hình </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{ element.name }} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="lop">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Lớp </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{ element.lop}} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="monhoc">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Môn học</mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ element.monhoc }}
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="thoigian">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Thời gian làm bài </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ element.thoigian }}
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="trangthai">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Trạng thái </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ element.trangthai }}
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="ghichu">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Ghi chú </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ element.ghichu }}
+        </mat-cell>
+      </ng-container>
+      
+      <ng-container matColumnDef="action">
+        <mat-header-cell *matHeaderCellDef class="justify-content-end">Action</mat-header-cell>
+        <mat-cell *matCellDef="let element" class="justify-content-end">
+          <ng-container>
+            <a class="menu-link" routerLink="/categories" routerLinkActive="active">
+            <button mat-icon-button color="accent">
+              <mat-icon aria-label="Example icon-button with a heart icon">perm_data_setting</mat-icon>
+            </button >
+          </a>
+          
+            <button mat-icon-button color="primary">
+              <mat-icon aria-label="Example icon-button with a heart icon">create</mat-icon> 
+            </button>
+         
+            <button mat-icon-button color="warn">
+              <mat-icon aria-label="Example icon-button with a heart icon">delete</mat-icon>
+            </button>
+          </ng-container>
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+    </mat-table>
+    <div [hidden]="hidePagination">
+      <mat-paginator [length]="totalCount" [pageSizeOptions]="pageSizeOptions" [pageSize]="filter.pageSize"
+      [pageIndex]="filter.page" (page)="onPageChange($event)">
+  
+      </mat-paginator>
+    </div>
+  </div>
+</div>

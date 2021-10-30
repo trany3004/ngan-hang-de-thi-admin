@@ -1,0 +1,22 @@
+.example-full-width {
+    width: 100%;
+}
+
+th.mat-header-cell,
+td.mat-cell,
+td.mat-footer-cell {
+    border-bottom-width: none;
+    border-bottom-style: none;
+}
+
+::placeholder {
+    margin-left: 10px;
+}
+
+a.product-quantiy {
+    color: #649450;
+    cursor: pointer;
+    &:hover {
+        text-decoration: underline;
+    }
+}

@@ -1,0 +1,99 @@
+<h2 mat-dialog-title>Update Sale Report</h2>
+<form class="example-form" [formGroup]="pgManagementForm" (submit)="update()">
+  <div class="loading" *ngIf="loading">
+    <div class="loading-container">
+      <svg class="splash-spinner" viewBox="0 0 50 50">
+        <circle
+          class="path"
+          cx="25"
+          cy="25"
+          r="20"
+          fill="none"
+          stroke-width="5"
+        ></circle>
+      </svg>
+    </div>
+  </div>
+  <mat-dialog-content class="mat-typography">
+    <div class="row">
+      <div class="col-md-12 col-sm-12">
+        <mat-form-field class="example-full-width">
+          <mat-select placeholder="Product" formControlName="pg_product">
+            <mat-option *ngFor="let product of products" [value]="product.id">
+              {{ product.name }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="pgManagementForm.controls['pg_product'].hasError('required')">
+            Product is required
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+    <!-- <div class="row">
+      <div class="col-md-12 col-sm-12">
+        <mat-form-field class="example-full-width">
+          <mat-select placeholder="Outlet" formControlName="pg_outlet">
+            <mat-option *ngFor="let outlet of outlets" [value]="outlet.id">
+              {{ outlet.name }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="pgManagementForm.controls['pg_product'].hasError('required')">
+            Outlet is required
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </div> -->
+    <div class="row">
+      <div class="col-md-6">
+        <mat-form-field class="example-full-width">
+            <input matInput placeholder="Reach" formControlName="reach">
+            <mat-error *ngIf="pgManagementForm.controls['reach'].hasError('required')">
+              Reach is required
+            </mat-error>
+            <mat-error *ngIf="pgManagementForm.controls['reach'].hasError('pattern')">
+              Reach is invalid
+            </mat-error>
+          </mat-form-field>
+      </div>
+      <div class="col-md-6">
+        <mat-form-field class="example-full-width">
+            <input matInput placeholder="Buyer" formControlName="buyers">
+            <mat-error *ngIf="pgManagementForm.controls['buyers'].hasError('required')">
+                Buyer is required
+            </mat-error>
+            <mat-error *ngIf="pgManagementForm.controls['buyers'].hasError('pattern')">
+              Buyer is invalid
+            </mat-error>
+          </mat-form-field>
+      </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+          <mat-form-field class="example-full-width">
+              <input matInput placeholder="Item Count" formControlName="itemCount">
+              <mat-error *ngIf="pgManagementForm.controls['itemCount'].hasError('required')">
+                Item Count is required
+              </mat-error>
+              <mat-error *ngIf="pgManagementForm.controls['itemCount'].hasError('pattern')">
+                Item Count is invalid
+              </mat-error>
+            </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field class="example-full-width">
+              <input matInput placeholder="Actual Display" formControlName="actualDisplay">
+              <mat-error *ngIf="pgManagementForm.controls['actualDisplay'].hasError('required')">
+                Actual Display is required
+              </mat-error>
+              <mat-error *ngIf="pgManagementForm.controls['actualDisplay'].hasError('pattern')">
+                Actual Display is invalid
+              </mat-error>
+            </mat-form-field>
+        </div>
+      </div>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Cancel</button>
+    <button mat-button type="submit" cdkFocusInitial>Update</button>
+  </mat-dialog-actions>
+</form>

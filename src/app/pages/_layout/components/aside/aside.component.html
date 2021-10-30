@@ -1,0 +1,238 @@
+<div class="brand flex-column-auto" id="kt_brand" [ngClass]="brandClasses" style="margin-top: 50px">
+  <a routerLink="/" class="brand-logo text-white">
+    <img alt="Logo" src="./assets/images/logo.jpg" style="height: 100px;"/>
+  </a>
+
+  <ng-container *ngIf="asideSelfMinimizeToggle">
+    <button class="brand-toggle btn btn-sm px-0" id="kt_aside_toggle">
+      <span
+        [inlineSVG]="
+          './assets/media/svg/icons/Navigation/Angle-double-left.svg'
+        "
+        cacheSVG="true"
+        class="svg-icon svg-icon-xl"
+      ></span>
+    </button>
+  </ng-container>
+</div>
+<div class="aside-menu-wrapper flex-column-fluid" id="kt_aside_menu_wrapper">
+  <ng-container *ngIf="disableAsideSelfDisplay">
+    <a routerLink="/">
+      <img alt="Logo" [attr.src]="headerLogo" />
+    </a>
+  </ng-container>
+  <div
+    id="kt_aside_menu"
+    class="aside-menu"
+    [ngClass]="asideMenuCSSClasses"
+    data-menu-vertical="1"
+    [attr.data-menu-scroll]="asideMenuScroll"
+    [attr.data-menu-dropdown]="asideMenuDropdown"
+    data-menu-dropdown-timeout="500"
+  >
+    <ul class="menu-nav" [ngClass]="ulCSSClasses">
+      <li
+        class="menu-item"
+        aria-haspopup="true"
+        routerLinkActive="menu-item-active"
+      >
+        <a class="menu-link" routerLink="/dashboard" routerLinkActive="active">
+          <span
+            [inlineSVG]="'./assets/media/svg/icons/Shopping/Chart-bar1.svg'"
+            cacheSVG="true"
+            class="svg-icon menu-icon"
+          ></span>
+          <span class="menu-text">Dashboard</span>
+        </a>
+      </li>
+      <!-- <li
+        class="menu-item"
+        aria-haspopup="true"
+        routerLinkActive="menu-item-active"
+      >
+        <a class="menu-link" routerLink="/builder" routerLinkActive="active">
+          <span
+            [inlineSVG]="'./assets/media/svg/icons/Shopping/Settings.svg'"
+            cacheSVG="true"
+            class="svg-icon menu-icon"
+          ></span>
+          <span class="menu-text">Builder Layout</span>
+        </a>
+      </li> -->
+
+      <li class="menu-section">
+        <h4 class="menu-text">Câu hỏi</h4>
+        <i class="menu-icon flaticon-more-v2"></i>
+      </li>
+
+      <li
+        class="menu-item"
+        aria-haspopup="true"
+        routerLinkActive="menu-item-active"
+      >
+        <a class="menu-link" routerLink="/working-schedule" routerLinkActive="active">
+          <span
+            [inlineSVG]="'./assets/media/svg/icons/Map/Marker1.svg'"
+            cacheSVG="true"
+            class="svg-icon menu-icon"
+          ></span>
+          <span class="menu-text">Câu hỏi</span>
+        </a>
+      </li>
+
+
+      <li class="menu-section">
+        <h4 class="menu-text">Bài kiểm tra</h4>
+        <i class="menu-icon flaticon-more-v2"></i>
+      </li>
+
+      <li
+        class="menu-item"
+        aria-haspopup="true"
+        routerLinkActive="menu-item-active"
+      >
+        <a class="menu-link" routerLink="/checkin-management" routerLinkActive="active">
+          <span
+            [inlineSVG]="'./assets/media/svg/icons/Map/Marker1.svg'"
+            cacheSVG="true"
+            class="svg-icon menu-icon"
+          ></span>
+          <span class="menu-text">Cấu trúc bài kiểm tra</span>
+        </a>
+      </li>
+
+      <li
+        class="menu-item"
+        aria-haspopup="true"
+        routerLinkActive="menu-item-active"
+      >
+        <a class="menu-link" routerLink="/pg-management" routerLinkActive="active">
+          <span
+            [inlineSVG]="'./assets/media/svg/icons/General/Clipboard.svg'"
+            cacheSVG="true"
+            class="svg-icon menu-icon"
+          ></span>
+          <span class="menu-text">Bài kiểm tra</span>
+        </a>
+      </li>
+
+      
+      <li class="menu-section">
+        <h4 class="menu-text">Bài kiểm tra ngoài hệ thống</h4>
+        <i class="menu-icon flaticon-more-v2"></i>
+      </li>
+
+      <li
+        class="menu-item"
+        aria-haspopup="true"
+        routerLinkActive="menu-item-active"
+      >
+        <a class="menu-link" routerLink="/inventory" routerLinkActive="active">
+          <span
+            [inlineSVG]="'./assets/media/svg/icons/General/Clipboard.svg'"
+            cacheSVG="true"
+            class="svg-icon menu-icon"
+          ></span>
+          <span class="menu-text">Bài kiểm tra ngoài hệ thống</span>
+        </a>
+      </li>
+
+      <li class="menu-section">
+        <h4 class="menu-text">Ôn tập lý thuyết</h4>
+        <i class="menu-icon flaticon-more-v2"></i>
+      </li>
+      <li
+      class="menu-item"
+      aria-haspopup="true"
+      routerLinkActive="menu-item-active"
+    >
+      <a class="menu-link" routerLink="/competitors" routerLinkActive="active">
+        <span
+          [inlineSVG]="'./assets/media/svg/icons/General/Clipboard.svg'"
+          cacheSVG="true"
+          class="svg-icon menu-icon"
+        ></span>
+        <span class="menu-text">Ôn tập</span>
+      </a>
+    </li>
+
+
+    <li class="menu-section">
+      <h4 class="menu-text">LỚP HỌC</h4>
+      <i class="menu-icon flaticon-more-v2"></i>
+    </li>
+    <li
+    class="menu-item"
+    aria-haspopup="true"
+    routerLinkActive="menu-item-active"
+  >
+    <a class="menu-link" routerLink="/evaluations" routerLinkActive="active">
+      <span
+        [inlineSVG]="'./assets/media/svg/icons/General/Clipboard.svg'"
+        cacheSVG="true"
+        class="svg-icon menu-icon"
+      ></span>
+      <span class="menu-text">Quản lý lớp học</span>
+    </a>
+  </li>
+  <li
+  class="menu-item"
+  aria-haspopup="true"
+  routerLinkActive="menu-item-active"
+>
+  <a class="menu-link" routerLink="/sales-report" routerLinkActive="active">
+    <span
+      [inlineSVG]="'./assets/media/svg/icons/General/Clipboard.svg'"
+      cacheSVG="true"
+      class="svg-icon menu-icon"
+    ></span>
+    <span class="menu-text">Lớp chủ nhiệm</span>
+  </a>
+</li>
+
+
+<li class="menu-section">
+  <h4 class="menu-text">TÀI KHOẢN</h4>
+  <i class="menu-icon flaticon-more-v2"></i>
+</li>
+<li
+class="menu-item"
+aria-haspopup="true"
+routerLinkActive="menu-item-active"
+>
+<a class="menu-link" routerLink="/gift-management" routerLinkActive="active">
+  <span
+    [inlineSVG]="'./assets/media/svg/icons/General/Clipboard.svg'"
+    cacheSVG="true"
+    class="svg-icon menu-icon"
+  ></span>
+  <span class="menu-text">Quản lý tài khoản</span>
+</a>
+</li>
+
+
+
+<li class="menu-section">
+  <h4 class="menu-text">CHỦ ĐỀ</h4>
+  <i class="menu-icon flaticon-more-v2"></i>
+</li>
+<li
+class="menu-item"
+aria-haspopup="true"
+routerLinkActive="menu-item-active"
+>
+<a class="menu-link" routerLink="/outlet-management" routerLinkActive="active">
+  <span
+    [inlineSVG]="'./assets/media/svg/icons/General/Clipboard.svg'"
+    cacheSVG="true"
+    class="svg-icon menu-icon"
+  ></span>
+  <span class="menu-text">Danh sách chủ đề</span>
+</a>
+</li>
+
+
+
+    </ul>
+  </div>
+</div>

@@ -1,0 +1,53 @@
+<h2 mat-dialog-title>Thêm mới chi tiết cấu hình</h2>
+<form class="example-form">
+  <!-- <mat-form-field class="example-full-width" appearance="fill">
+    <mat-label>Company (disabled)</mat-label>
+    <input matInput disabled value="Google">
+  </mat-form-field> -->
+
+  <table class="example-full-width" cellspacing="0"><tr>
+    <mat-form-field class="example-full-width" appearance="fill">
+      <mat-label>Chọn danh mục</mat-label>
+      <mat-select>
+        <mat-option *ngFor="let dm of danhmuc" [value]="dm.value">
+          {{dm.viewValue}}
+        </mat-option>
+      </mat-select>
+      <input matInput>
+    </mat-form-field>
+    <mat-form-field class="example-full-width" appearance="fill">
+      <mat-label>Chọn chuyên đề</mat-label>
+      <mat-select>
+        <mat-option *ngFor="let cd of chuyende" [value]="cd.value">
+          {{cd.viewValue}}
+        </mat-option>
+      </mat-select>
+      <input matInput>
+    </mat-form-field>
+    <mat-form-field class="example-full-width" appearance="fill">
+      <mat-label>Số câu nhận biết</mat-label>
+      
+      <input matInput>
+    </mat-form-field>
+    <mat-form-field class="example-full-width" appearance="fill">
+      <mat-label>Số câu thông hiểu</mat-label>
+      
+      <input matInput>
+    </mat-form-field>
+    <mat-form-field class="example-full-width" appearance="fill">
+      <mat-label>Số câu vận dụng</mat-label>
+      <input matInput>
+    </mat-form-field>
+    <mat-form-field class="example-full-width" appearance="fill">
+      <mat-label>Số câu vận dụng cao</mat-label>
+  
+      <input matInput>
+    </mat-form-field>
+  
+  </tr></table>
+
+  
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Bỏ qua</button>
+  <button mat-button mat-dialog-close>Lưu</button>
+</mat-dialog-actions>

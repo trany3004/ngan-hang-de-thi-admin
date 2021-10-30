@@ -1,0 +1,68 @@
+<div>
+    <mat-form-field appearance="fill">
+      <mat-label>Month and Year</mat-label>
+      <input matInput [matDatepicker]="dp" [formControl]="date">
+      <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
+      <mat-datepicker #dp
+                      startView="multi-year"
+                      (yearSelected)="chosenYearHandler($event)"
+                      (monthSelected)="chosenMonthHandler($event, dp)"
+                      panelClass="example-month-picker">
+      </mat-datepicker>
+    </mat-form-field>
+  </div>
+ <div class="row">
+   <div class="col-md-6 col-sm-12">
+    <div id="chart2">
+      <div class="loading" *ngIf="loading">
+        <div class="loading-container">
+          <svg class="splash-spinner" viewBox="0 0 50 50">
+            <circle
+              class="path"
+              cx="25"
+              cy="25"
+              r="20"
+              fill="none"
+              stroke-width="5"
+            ></circle>
+          </svg>
+        </div>
+      </div>
+      <apx-chart
+        [series]="chartOptions2.series"
+        [chart]="chartOptions2.chart"
+        [dataLabels]="chartOptions2.dataLabels"
+        [plotOptions]="chartOptions2.plotOptions"
+        [yaxis]="chartOptions2.yaxis"
+        [legend]="chartOptions2.legend"
+        [fill]="chartOptions2.fill"
+        [stroke]="chartOptions2.stroke"
+        [tooltip]="chartOptions2.tooltip"
+        [xaxis]="chartOptions2.xaxis"
+      ></apx-chart>
+    </div>
+   </div>
+   <div class="col-md-6 col-sm-12">
+    <mat-table #table [dataSource]="tableTargetReportDate" class="table-responsive">
+      <ng-container matColumnDef="actual">
+        <mat-header-cell *matHeaderCellDef> Actual </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{ element.actual | formatCurrency:true }} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="target">
+        <mat-header-cell *matHeaderCellDef> Target </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ element.target | formatCurrency:true }}
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="achievement">
+        <mat-header-cell *matHeaderCellDef> Achievement </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ element.achievement }}%
+        </mat-cell>
+      </ng-container>
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+    </mat-table>
+   </div>
+ </div>

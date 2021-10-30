@@ -1,0 +1,68 @@
+
+<mat-expansion-panel [expanded]="true" (opened)="panelOpenState = true" (closed)="panelOpenState = false" class="mt-5 mb-5">
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      Số lượng checkin theo ngày
+    </mat-panel-title>
+    <mat-panel-description>
+      
+    </mat-panel-description>
+  </mat-expansion-panel-header>
+  <app-stats-widget11></app-stats-widget11>
+</mat-expansion-panel>
+
+<mat-expansion-panel [expanded]="true" (opened)="panelOpenState = true" (closed)="panelOpenState = false" class="mt-5 mb-5">
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      Số lượng target/actual theo ngày
+    </mat-panel-title>
+    <mat-panel-description>
+      Currently I am {{panelOpenState ? 'open' : 'closed'}}
+    </mat-panel-description>
+  </mat-expansion-panel-header>
+  <app-stats-widget12></app-stats-widget12>
+</mat-expansion-panel>
+<mat-expansion-panel [expanded]="true" (opened)="panelOpenState = true" (closed)="panelOpenState = false" class="mt-5 mb-5">
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      Số lượng target/actual theo tháng
+    </mat-panel-title>
+    <mat-panel-description>
+      Currently I am {{panelOpenState ? 'open' : 'closed'}}
+    </mat-panel-description>
+  </mat-expansion-panel-header>
+  <app-stats-widget11></app-stats-widget11>
+</mat-expansion-panel>
+<mat-expansion-panel [expanded]="true" (opened)="panelOpenState = true" (closed)="panelOpenState = false" class="mt-5 mb-5">
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      Số lượng target/actual theo nhóm từng outlet
+    </mat-panel-title>
+    <mat-panel-description>
+      Currently I am {{panelOpenState ? 'open' : 'closed'}}
+    </mat-panel-description>
+  </mat-expansion-panel-header>
+  <app-stats-widget12></app-stats-widget12>
+</mat-expansion-panel>
+<mat-expansion-panel [expanded]="true" (opened)="panelOpenState = true" (closed)="panelOpenState = false" class="mt-5 mb-5">
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      Top 10 outlet có doanh số tốt nhất
+    </mat-panel-title>
+    <mat-panel-description>
+      Currently I am {{panelOpenState ? 'open' : 'closed'}}
+    </mat-panel-description>
+  </mat-expansion-panel-header>
+  <app-stats-widget11></app-stats-widget11>
+</mat-expansion-panel>
+<mat-expansion-panel [expanded]="true" (opened)="panelOpenState = true" (closed)="panelOpenState = false" class="mt-5 mb-5">
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      Top 10 PG bán tốt nhất
+    </mat-panel-title>
+    <mat-panel-description>
+      Currently I am {{panelOpenState ? 'open' : 'closed'}}
+    </mat-panel-description>
+  </mat-expansion-panel-header>
+  <app-stats-widget12></app-stats-widget12>
+</mat-expansion-panel>

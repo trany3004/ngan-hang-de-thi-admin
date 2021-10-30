@@ -1,0 +1,25 @@
+<div class="card card-custom example example-compact gutter-b">
+  <ul>
+  
+    <li>
+     <ckeditor [(ngModel)]="model.editorData" [editor]="Editor"></ckeditor>
+    </li>
+    <li>
+      <button  id="btn" (click)='showval()'>click</button>
+    </li>
+    <li>
+      <!-- <ckeditor data="{{data}}"></ckeditor> -->
+       {{data}} <br>
+    </li>
+      <li>
+      <hr>
+      <ckeditor [data]="editorData"></ckeditor>
+    </li>  <li>
+      <div>
+        MathMIL
+        <hr>
+        <div [appMath]="mathMl"></div>
+      </div>
+    </li>
+  </ul>
+</div>

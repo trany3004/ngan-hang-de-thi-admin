@@ -1,0 +1,49 @@
+<h2 mat-dialog-title>Thêm mới bài kiểm tra tự động</h2>
+<table class="example-full-width" cellspacing="0"><tr>
+  <mat-form-field class="example-full-width" appearance="fill">
+    <mat-label>Chọn môn học</mat-label>
+    <mat-select>
+      <mat-option *ngFor="let mh of monhoc" [value]="mh.value">
+        {{mh.viewValue}}
+      </mat-option>
+    </mat-select>
+    <input matInput>
+  </mat-form-field>
+  <mat-form-field class="example-full-width" appearance="fill">
+    <mat-label>Tên kỳ thi</mat-label>
+    <mat-select>
+      <mat-option *ngFor="let kt of kythi" [value]="kt.value">
+        {{kt.viewValue}}
+      </mat-option>
+    </mat-select>
+    <input matInput>
+  </mat-form-field>
+  <mat-form-field class="example-full-width" appearance="fill">
+    <mat-label>Chọn cấu hình bài kiểm tra</mat-label>
+   
+    <input matInput>
+  </mat-form-field>
+  <mat-form-field class="example-full-width" appearance="fill">
+    <mat-label>Tên bài kiểm tra</mat-label>
+   
+    <input matInput>
+  </mat-form-field>
+  <mat-form-field class="example-full-width" appearance="fill">
+    <mat-label>Số mã đề muốn tạo</mat-label>
+    <mat-select>
+      <mat-option *ngFor="let md of made" [value]="md.value">
+        {{md.viewValue}}
+      </mat-option>
+    </mat-select>
+    <input matInput>
+  </mat-form-field>
+
+</tr></table>
+
+
+<mat-dialog-actions align="end">
+<button mat-button mat-dialog-close>Bỏ qua</button>
+<a class="menu-link" routerLink="/sales-report-sku" routerLinkActive="active">
+<button mat-button mat-dialog-close>Lưu</button>
+</a>
+</mat-dialog-actions>

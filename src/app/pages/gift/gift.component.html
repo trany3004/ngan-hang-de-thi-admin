@@ -1,0 +1,98 @@
+<div class="card card-custom example example-compact gutter-b">
+  <div class="card-header">
+    <div class="card-title">
+      Quản lý tài khoản
+    </div>
+    <div class="card-toolbar">
+      <div class="example-tools justify-content-center">
+       
+          <button mat-raised-button color="primary" (click)="createPg()">
+            <span class="material-icons">add</span>Thêm mới
+          </button>
+    
+      </div>
+    </div>
+  </div>
+ 
+  <div class="card-body table-responsive">
+    <div class="loading" *ngIf="loading">
+      <div class="loading-container">
+        <svg class="splash-spinner" viewBox="0 0 50 50">
+          <circle
+            class="path"
+            cx="25"
+            cy="25"
+            r="20"
+            fill="none"
+            stroke-width="5"
+          ></circle>
+        </svg>
+      </div>
+    </div>
+    <!-- <app-filter (onFilterData)="onFilterData($event)"></app-filter> -->
+    <mat-table #table [dataSource]="dataSource" matSort>
+      <ng-container matColumnDef="customerName">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> CustomerName </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{ element.customerName }} </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="customerMobile">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> PhoneNumber </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{ element.customerMobile }} </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="product">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> ProductName </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{ element.product }} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="quantity">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Quantity </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{ element.quantity }} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="outlet">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> OutletName </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ element.outlet }}
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="receipt">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Receipt Photo </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          <a href="{{element.receipt_}}" target="_blank" *ngIf="element.receipt_">
+            <img [src]="element.receipt_" alt="" class="w-75 m-2">
+          </a>
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="createdAt">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Date </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ element.createdAt_}}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="action">
+        <mat-header-cell *matHeaderCellDef class="justify-content-end">Action</mat-header-cell>
+        <mat-cell class="justify-content-end" *matCellDef="let element">
+          <ng-container>
+            <button mat-icon-button color="primary" (click)="modify(element)">
+              <mat-icon aria-label="Example icon-button with a heart icon">create</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="deleteItem(element)">
+              <mat-icon aria-label="Example icon-button with a heart icon">delete</mat-icon>
+            </button>
+          </ng-container>
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+    </mat-table>
+    <div [hidden]="hidePagination">
+      <mat-paginator [length]="totalCount" [pageSizeOptions]="pageSizeOptions" [pageSize]="filter.pageSize"
+      [pageIndex]="filter.page" (page)="onPageChange($event)">
+  
+      </mat-paginator>
+    </div>
+  </div>
+</div>

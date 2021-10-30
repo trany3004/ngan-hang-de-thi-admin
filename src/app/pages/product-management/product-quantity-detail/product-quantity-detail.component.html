@@ -1,0 +1,57 @@
+<h2 mat-dialog-title>Quantity in Outlet</h2>
+<form class="example-form">
+  <div class="loading" *ngIf="loading">
+    <div class="loading-container">
+      <svg class="splash-spinner" viewBox="0 0 50 50">
+        <circle
+          class="path"
+          cx="25"
+          cy="25"
+          r="20"
+          fill="none"
+          stroke-width="5"
+        ></circle>
+      </svg>
+    </div>
+  </div>
+  <mat-dialog-content class="mat-typography">
+    <div class="row">
+      <div class="col-md-12">
+        <label><span style="font-weight: bold;">Product name:</span> {{data.name}}</label>
+      </div>
+      <div class="col-md-12">
+        <label><span style="font-weight: bold;">Product code:</span> {{data.code}}</label>
+      </div>
+    </div>
+    <div class="row">
+      <mat-form-field class="filter">
+        <mat-label>Filter</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="Outlet" #input>
+      </mat-form-field>
+      <mat-table #table [dataSource]="dataSource" matSort class="table-responsive product-quantity-table">
+      
+        <!-- Position Column -->
+        <ng-container matColumnDef="outletName">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> Outlet name </mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{element.outletName}} </mat-cell>
+        </ng-container>
+      
+        <!-- Name Column -->
+        <ng-container matColumnDef="name">
+          <mat-header-cell *matHeaderCellDef> Quantity </mat-header-cell>
+          <mat-cell *matCellDef="let element"> 
+            <input style="width: 100%" class="form-control" type="number" min="0"
+            [(ngModel)]="element.quantity" [ngModelOptions]="{standalone: true}"
+            (blur)="blurInput(element)">
+          </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+      </mat-table>
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="close()">Close</button>
+    <button mat-button type="submit" (click) = "submit()" [disabled]="loading">Update</button>
+  </mat-dialog-actions>
+</form>

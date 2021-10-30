@@ -1,0 +1,60 @@
+<h2 mat-dialog-title>Thêm mới cấu hình kiểm tra</h2>
+<form class="example-form">
+  <!-- <mat-form-field class="example-full-width" appearance="fill">
+    <mat-label>Company (disabled)</mat-label>
+    <input matInput disabled value="Google">
+  </mat-form-field> -->
+
+  <table class="example-full-width" cellspacing="0"><tr>
+    <mat-form-field class="example-full-width" appearance="fill">
+      <mat-label>Tên cấu hình</mat-label>
+      <input matInput>
+    </mat-form-field>
+    <mat-form-field class="example-full-width" appearance="fill">
+      <mat-label>Lớp</mat-label>
+      <mat-select>
+        <mat-option *ngFor="let lop of lops" [value]="lop.value">
+          {{lop.viewValue}}
+        </mat-option>
+      </mat-select>
+      <input matInput>
+    </mat-form-field>
+    <mat-form-field class="example-full-width" appearance="fill">
+      <mat-label>Môn học</mat-label>
+      <mat-select>
+        <mat-option *ngFor="let mh of monhoc" [value]="mh.value">
+          {{mh.viewValue}}
+        </mat-option>
+      </mat-select>
+      <input matInput>
+    </mat-form-field>
+    <mat-form-field class="example-full-width" appearance="fill">
+      <mat-label>Thời gian làm bài</mat-label>
+      <mat-select>
+        <mat-option *ngFor="let tg of thoigian" [value]="tg.value">
+          {{tg.viewValue}}
+        </mat-option>
+      </mat-select>
+      <input matInput>
+    </mat-form-field>
+    <mat-form-field class="example-full-width" appearance="fill">
+      <mat-label>Ghi chú</mat-label>
+      <input matInput>
+    </mat-form-field>
+    <mat-form-field class="example-full-width" appearance="fill">
+      <mat-label>Trạng thái</mat-label>
+      <mat-select>
+        <mat-option *ngFor="let tt of trangthai" [value]="tt.value">
+          {{tt.viewValue}}
+        </mat-option>
+      </mat-select>
+      <input matInput>
+    </mat-form-field>
+  
+  </tr></table>
+
+  
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Bỏ qua</button>
+  <button mat-button mat-dialog-close>Lưu</button>
+</mat-dialog-actions>

@@ -1,0 +1,121 @@
+<!doctype html>
+<!--
+Theme: Metronic - The Ultimate Bootstrap Admin Theme
+Author: KeenThemes
+Website: http://www.keenthemes.com/
+Contact: support@keenthemes.com
+Follow: www.twitter.com/keenthemes
+Dribbble: www.dribbble.com/keenthemes
+Like: www.facebook.com/keenthemes
+License: You must have a valid license purchased only from https://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469/ in order to legally use the theme for your project.
+-->
+<html lang="en">
+<!--
+Use below html tag for RTL version
+<html lang="en" dir="rtl" direction="rtl" style="direction: rtl">
+-->
+<meta charset="utf-8">
+<title>Ngân hàng đề thi</title>
+<base href="/">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/x-icon" href="./assets/images/logo.jpg">
+<link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700|Roboto:300,400,500,600,700"
+  rel="stylesheet">
+<!-- Splash Screen | Appears during application initialization proccess -->
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+  }
+
+  #splash-screen {
+    position: absolute;
+    z-index: 1000;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background-color: #f2f3f8;
+  }
+
+  #splash-screen img {
+    margin-left: calc(100vw - 100%);
+    margin-bottom: 30px;
+  }
+
+  #splash-screen.hidden {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .splash-spinner {
+    animation: rotate 2s linear infinite;
+    margin-left: calc(100vw - 100%);
+    width: 50px;
+    height: 50px;
+  }
+
+  .splash-spinner .path {
+    stroke: #5d78ff;
+    stroke-linecap: round;
+    animation: dash 1.5s ease-in-out infinite;
+  }
+
+  @keyframes rotate {
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes dash {
+    0% {
+      stroke-dasharray: 1, 150;
+      stroke-dashoffset: 0;
+    }
+
+    50% {
+      stroke-dasharray: 90, 150;
+      stroke-dashoffset: -35;
+    }
+
+    100% {
+      stroke-dasharray: 90, 150;
+      stroke-dashoffset: -124;
+    }
+  }
+
+  ::-webkit-scrollbar {
+  width: 5px; 
+  height: 7px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #1e202a;
+  outline: 1px solid #1e202a;
+  border-radius: 50px;
+}
+
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 4px rgba(0,0,0,0.2);
+}
+@-moz-document url-prefix() {
+  .scroller {
+    scrollbar-width: thin;
+    scrollbar-color: #1e202a;
+  }
+}
+</style>
+</head>
+
+<body root id="kt_body">
+  <div id="splash-screen">
+    <!-- <img src="./assets/images/logo.jpg" alt="Logo" /> -->
+    <svg class="splash-spinner" viewBox="0 0 50 50">
+      <circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
+    </svg>
+  </div>
+</body>
+
+</html>

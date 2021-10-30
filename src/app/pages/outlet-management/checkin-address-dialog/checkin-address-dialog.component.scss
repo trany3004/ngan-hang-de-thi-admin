@@ -1,0 +1,26 @@
+.example-full-width {
+    width: 100%;
+}
+// .mat-typography {
+//     height: 500px;
+//     width: 600px;
+// }
+
+.mapouter {
+	position: relative;
+	text-align: right;
+	height: 100%;
+	width: 100%;
+}
+
+.gmap_canvas {
+	overflow: hidden;
+	background: none !important;
+	height: 100%;
+	width: 100%;
+}
+
+iframe {
+    height: 420px;
+    width: 1000px;
+}

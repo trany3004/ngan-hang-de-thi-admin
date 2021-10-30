@@ -1,0 +1,16 @@
+.example-full-width {
+    width: 100%;
+}
+
+::placeholder {
+    margin-left: 10px;
+}
+
+:host {
+    .map-icon {
+        transform: scale(1.5);
+    }
+  }
+img {
+    cursor: pointer;
+}

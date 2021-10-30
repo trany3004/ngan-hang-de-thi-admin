@@ -1,0 +1,322 @@
+<!-- <app-dashboard-wrapper></app-dashboard-wrapper> -->
+<mat-expansion-panel [expanded]="true" (opened)="panelOpenState = true" (closed)="panelOpenState = false"
+  class="mt-5 mb-5">
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      Today reports
+    </mat-panel-title>
+  </mat-expansion-panel-header>
+  <div class="row" style="position: loadingReportToday;">
+    <div class="loading" *ngIf="loadingTopStoreLow">
+      <div class="loading-container">
+        <svg class="splash-spinner" viewBox="0 0 50 50">
+          <circle
+            class="path"
+            cx="25"
+            cy="25"
+            r="20"
+            fill="none"
+            stroke-width="5"
+          ></circle>
+        </svg>
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-3">
+     <ng-container *ngIf="chartTarget.series">
+      <apx-chart [series]="chartTarget.series" [chart]="chartTarget.chart" [dataLabels]="chartTarget.dataLabels"
+      [plotOptions]="chartTarget.plotOptions" [yaxis]="chartTarget.yaxis" [legend]="chartTarget.legend"
+      [fill]="chartTarget.fill" [stroke]="chartTarget.stroke" [tooltip]="chartTarget.tooltip"
+      [xaxis]="chartTarget.xaxis"></apx-chart>
+     </ng-container>
+    </div>
+    <div class="col-sm-12 col-md-3">
+     <ng-container *ngIf="chartCheckin.series">
+      <apx-chart [series]="chartCheckin.series" [chart]="chartCheckin.chart" [dataLabels]="chartCheckin.dataLabels"
+      [plotOptions]="chartCheckin.plotOptions" [yaxis]="chartCheckin.yaxis" [legend]="chartCheckin.legend"
+      [fill]="chartCheckin.fill" [stroke]="chartCheckin.stroke" [tooltip]="chartCheckin.tooltip"
+      [xaxis]="chartCheckin.xaxis"></apx-chart>
+     </ng-container>
+    </div>
+    <div class="col-sm-12 col-md-6">
+      <mat-table #table [dataSource]="tableTargetReportDate" class="table-responsive">
+        <ng-container matColumnDef="actual">
+          <mat-header-cell *matHeaderCellDef> Actual </mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{ element.actual | formatCurrency:true }} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="target">
+          <mat-header-cell *matHeaderCellDef> Target </mat-header-cell>
+          <mat-cell *matCellDef="let element">
+            {{ element.target | formatCurrency:true }}
+          </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="achievement">
+          <mat-header-cell *matHeaderCellDef> Achievement </mat-header-cell>
+          <mat-cell *matCellDef="let element">
+            {{ element.achievement }}%
+          </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="displayedColumn1s"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumn1s"></mat-row>
+      </mat-table>
+      <div class="mb-3"></div>
+      <mat-table #table [dataSource]="tableCheckinReportDate" class="table-responsive">
+        <ng-container matColumnDef="checkin">
+          <mat-header-cell *matHeaderCellDef> Checkin </mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{ element.checkin }} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="absent">
+          <mat-header-cell *matHeaderCellDef> Absent </mat-header-cell>
+          <mat-cell *matCellDef="let element">
+            {{ element.absent }}
+          </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="achievement">
+          <mat-header-cell *matHeaderCellDef> Achievement </mat-header-cell>
+          <mat-cell *matCellDef="let element">
+            {{ element.achievement }}%
+          </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="displayedColumn2s"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumn2s"></mat-row>
+      </mat-table>
+    </div>
+  </div>
+</mat-expansion-panel>
+
+<mat-expansion-panel [expanded]="true" (opened)="panelOpenState = true" (closed)="panelOpenState = false"
+  class="mt-5 mb-5">
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      Check in/out
+    </mat-panel-title>
+    <mat-panel-description>
+    </mat-panel-description>
+  </mat-expansion-panel-header>
+  <mat-form-field>
+    <input matInput [matDatepicker]="picker" placeholder="Choose date" [(ngModel)]="reportCheckin" (ngModelChange)="loadReportCheckinByDate()">
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
+  <div class="row">
+    <div class="loading" *ngIf="loadingReportByDate">
+      <div class="loading-container">
+        <svg class="splash-spinner" viewBox="0 0 50 50">
+          <circle
+            class="path"
+            cx="25"
+            cy="25"
+            r="20"
+            fill="none"
+            stroke-width="5"
+          ></circle>
+        </svg>
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-6">
+      <div id="chart">
+        <apx-chart [series]="chartCheckinByDate.series" [chart]="chartCheckinByDate.chart" [labels]="chartCheckinByDate.labels"
+          [responsive]="chartCheckinByDate.responsive"></apx-chart>
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-6">
+      <mat-table #table [dataSource]="tableCheckinReportByDate" class="table-responsive">
+        <ng-container matColumnDef="checkin">
+          <mat-header-cell *matHeaderCellDef> Checkin </mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{ element.checkin }} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="absent">
+          <mat-header-cell *matHeaderCellDef> Absent </mat-header-cell>
+          <mat-cell *matCellDef="let element">
+            {{ element.absent }}
+          </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="achievement">
+          <mat-header-cell *matHeaderCellDef> Achievement </mat-header-cell>
+          <mat-cell *matCellDef="let element">
+            {{ element.achievement }}%
+          </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="displayedColumn2s"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumn2s"></mat-row>
+      </mat-table>
+    </div>
+  </div>
+</mat-expansion-panel>
+
+<mat-expansion-panel [expanded]="true" (opened)="panelOpenState = true" (closed)="panelOpenState = false"
+  class="mt-5 mb-5">
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      Month-to-date target reached (by groups)
+    </mat-panel-title>
+  </mat-expansion-panel-header>
+    <app-reported-month-group></app-reported-month-group>
+</mat-expansion-panel>
+
+<mat-expansion-panel [expanded]="true" (opened)="panelOpenState = true" (closed)="panelOpenState = false"
+  class="mt-5 mb-5">
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      Reported Month
+    </mat-panel-title>
+  </mat-expansion-panel-header>
+  <!-- <app-reported-month></app-reported-month> -->
+</mat-expansion-panel>
+<div class="row">
+  <div class="col-sm-12 col-md-6">
+    <mat-expansion-panel [expanded]="true" (opened)="panelOpenState = true" (closed)="panelOpenState = false"
+      class="mt-5 mb-5" style="position: relative;">
+      <div class="loading" *ngIf="loadingTopStoreHigh">
+        <div class="loading-container">
+          <svg class="splash-spinner" viewBox="0 0 50 50">
+            <circle
+              class="path"
+              cx="25"
+              cy="25"
+              r="20"
+              fill="none"
+              stroke-width="5"
+            ></circle>
+          </svg>
+        </div>
+      </div>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          5 High performance stores
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <mat-table #table [dataSource]="topStoresHigh" class="table-responsive">
+        <ng-container matColumnDef="store">
+          <mat-header-cell *matHeaderCellDef> Store/Outlet </mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{ element.name }} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="actual">
+          <mat-header-cell *matHeaderCellDef> Actual </mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{ element.actual | formatCurrency:true }} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="target">
+          <mat-header-cell *matHeaderCellDef> Target </mat-header-cell>
+          <mat-cell *matCellDef="let element">
+            {{ element.target | formatCurrency:true }}
+          </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="achievement">
+          <mat-header-cell *matHeaderCellDef> Achievement </mat-header-cell>
+          <mat-cell *matCellDef="let element">
+            {{ element.achievement }}%
+          </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+      </mat-table>
+    </mat-expansion-panel>
+  </div>
+  <div class="col-sm-12 col-md-6">
+    <mat-expansion-panel [expanded]="true" (opened)="panelOpenState = true" (closed)="panelOpenState = false"
+    class="mt-5 mb-5" style="position: relative;">
+    <div class="loading" *ngIf="loadingTopStoreLow">
+      <div class="loading-container">
+        <svg class="splash-spinner" viewBox="0 0 50 50">
+          <circle
+            class="path"
+            cx="25"
+            cy="25"
+            r="20"
+            fill="none"
+            stroke-width="5"
+          ></circle>
+        </svg>
+      </div>
+    </div>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          5 Low performance stores
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <mat-table #table [dataSource]="topStoresLow" class="table-responsive">
+        <ng-container matColumnDef="store">
+          <mat-header-cell *matHeaderCellDef> Store/Outlet </mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{ element.name }} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="actual">
+          <mat-header-cell *matHeaderCellDef> Actual </mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{ element.actual | formatCurrency:true }} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="target">
+          <mat-header-cell *matHeaderCellDef> Target </mat-header-cell>
+          <mat-cell *matCellDef="let element">
+            {{ element.target | formatCurrency:true }}
+          </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="achievement">
+          <mat-header-cell *matHeaderCellDef> Achievement </mat-header-cell>
+          <mat-cell *matCellDef="let element">
+            {{ element.achievement }}%
+          </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+      </mat-table>
+    </mat-expansion-panel>
+  </div>
+</div>
+<mat-expansion-panel [expanded]="true" (opened)="panelOpenState = true" (closed)="panelOpenState = false"
+  class="mt-5 mb-5">
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      Last 7 days
+    </mat-panel-title>
+  </mat-expansion-panel-header>
+  <div class="loading" *ngIf="loadingReportBy7Dates">
+    <div class="loading-container">
+      <svg class="splash-spinner" viewBox="0 0 50 50">
+        <circle
+          class="path"
+          cx="25"
+          cy="25"
+          r="20"
+          fill="none"
+          stroke-width="5"
+        ></circle>
+      </svg>
+    </div>
+  </div>
+  <div style="width: 100%" *ngIf="!loadingReportBy7Dates && chartTargetBy7Dates.series">
+    <apx-chart [series]="chartTargetBy7Dates.series" [chart]="chartTargetBy7Dates.chart" [xaxis]="chartTargetBy7Dates.xaxis" [yaxis]="chartTargetBy7Dates.yaxis"
+      [stroke]="chartTargetBy7Dates.stroke" [tooltip]="chartTargetBy7Dates.tooltip" [dataLabels]="chartTargetBy7Dates.dataLabels">
+    </apx-chart>
+  </div>
+  <div class="row">
+    <mat-table #table [dataSource]="tableTargetReportBy7Date" class="table-responsive">
+      <ng-container matColumnDef="date">
+        <mat-header-cell *matHeaderCellDef> Date </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{ element.date}} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="actual">
+        <mat-header-cell *matHeaderCellDef> Actual </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{ element.actual | formatCurrency:true }} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="target">
+        <mat-header-cell *matHeaderCellDef> Target </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ element.target | formatCurrency:true }}
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="achievement">
+        <mat-header-cell *matHeaderCellDef> Achievement </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ element.achievement }}%
+        </mat-cell>
+      </ng-container>
+      <mat-header-row *matHeaderRowDef="displayedColumns7days"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns7days"></mat-row>
+    </mat-table>
+  </div>
+</mat-expansion-panel>

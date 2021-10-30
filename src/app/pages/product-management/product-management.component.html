@@ -1,0 +1,104 @@
+<div class="card card-custom example example-compact gutter-b">
+  <div class="card-header">
+    <div class="card-title">
+      List Of Products
+    </div>
+    <div class="card-toolbar">
+      <div class="example-tools justify-content-center">
+        <button mat-raised-button color="primary" [class.spinner]="exporting" (click)="export()" [disabled]="loading || exporting">
+          <span class="material-icons">vertical_align_bottom</span>Export
+        </button>
+        <button mat-raised-button color="accent" class="ml-2" (click)="createPg()">
+          <span class="material-icons">add</span>Add Product
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="card-body table-responsive">
+    <div class="loading" *ngIf="loading">
+      <div class="loading-container">
+        <svg class="splash-spinner" viewBox="0 0 50 50">
+          <circle
+            class="path"
+            cx="25"
+            cy="25"
+            r="20"
+            fill="none"
+            stroke-width="5"
+          ></circle>
+        </svg>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6 col-sm-12">
+        <mat-form-field class="example-full-width">
+          <input matInput placeholder="Tìm kiếm" [(ngModel)]="filter.name_contains" (ngModelChange)="changeSearch()">
+        </mat-form-field>
+      </div>
+    </div>
+    <mat-table #table [dataSource]="dataSource" matSort class="table-responsive">
+      <ng-container matColumnDef="code">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Code </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{ element.code }} </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="category">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Category </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{ element.category }} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="name">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Sku(vi) </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{ element.name }} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="brand">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Brand </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{ element.brand }} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="price">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Price </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{ element.price | formatCurrency:true }} </mat-cell>
+      </ng-container>
+
+      
+      <ng-container matColumnDef="quantity">
+        <th mat-header-cell *matHeaderCellDef width ="15%"> Quantity in Stock </th>
+        <td mat-cell *matCellDef="let element" width ="15%">
+          <ng-container>
+            <a (click)="openProductByOutlet(element)" class="product-quantiy" title="View detail">{{ element.quantity || 0}} </a>
+          </ng-container>
+        </td>
+        <!-- <mat-header-cell *matHeaderCellDef mat-sort-header> Quantity in Stock </mat-header-cell>
+        <mat-cell *matCellDef="let element"> <a (click)="openProductByOutlet(element)" class="product-quantiy" title="View detail">{{ element.quantity || 0}} </a></mat-cell> -->
+      </ng-container>
+
+      <ng-container matColumnDef="size">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Size </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{ element.size }} </mat-cell>
+      </ng-container>
+
+
+      <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef width ="110px"> Action </th>
+        <td mat-cell *matCellDef="let element" width ="110px">
+          <ng-container>
+            <button mat-icon-button color="primary" (click)="update(element)">
+              <mat-icon aria-label="Example icon-button with a heart icon">create</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="deletePg(element.id)">
+              <mat-icon aria-label="Example icon-button with a heart icon">delete</mat-icon>
+            </button>
+          </ng-container>
+        </td>
+      </ng-container>
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+    </mat-table>
+
+    <mat-paginator [length]="totalCount" [pageSizeOptions]="pageSizeOptions" [pageSize]="filter.pageSize"
+    [pageIndex]="filter.page" (page)="onPageChange($event)">
+
+    </mat-paginator>
+  </div>
+</div>

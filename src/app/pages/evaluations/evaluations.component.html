@@ -1,0 +1,102 @@
+<div class="card card-custom example example-compact gutter-b">
+  <div class="card-header">
+    <div class="card-title">
+      Evaluations
+    </div>
+    <div class="card-toolbar">
+      <div class="example-tools justify-content-center">
+        <button mat-raised-button color="primary" (click)="export()">
+          <span class="material-icons">vertical_align_bottom</span>Export
+        </button>
+        <button mat-raised-button color="accent" class="ml-2" (click)="createPg()">
+          <span class="material-icons">add</span>New record
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="card-body table-responsive">
+    <!-- <app-filter></app-filter> -->
+
+    <mat-table #table [dataSource]="dataSource" matSort class="table-responsive">
+      <ng-container matColumnDef="nameSearch">
+        <mat-header-cell *matHeaderCellDef>
+          <input type="email" class="form-control w-100" />
+        </mat-header-cell>
+      </ng-container>
+      <ng-container matColumnDef="addressSearch">
+        <!-- <mat-header-cell *matHeaderCellDef>
+          <input type="email" class="form-control w-100" />
+        </mat-header-cell> -->
+        <th mat-header-cell *matHeaderCellDef width="35%">
+          <input type="email" class="form-control w-100" />
+        </th>
+      </ng-container>
+      <ng-container matColumnDef="identityCardSearch">
+        <mat-header-cell *matHeaderCellDef>
+          <input type="email" class="form-control w-100" />
+        </mat-header-cell>
+      </ng-container>
+      <ng-container matColumnDef="dayOfBirthSearch">
+        <mat-header-cell *matHeaderCellDef>
+          <input class="form-control w-100" type="date" id="example-date-input" />
+        </mat-header-cell>
+      </ng-container>
+      <ng-container matColumnDef="actionSearch">
+        <mat-header-cell *matHeaderCellDef class="justify-content-end">
+          <button mat-raised-button class="btn-secondary mb-1">
+            <div class="d-flex align-items-center justify-content-center">
+              <span>Xóa</span>
+              <span class="material-icons ml-2">clear</span>
+            </div>
+          </button>
+        </mat-header-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="name">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Tên </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{ element.name }} </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="address">
+        <!-- <mat-header-cell *matHeaderCellDef mat-sort-header> Địa chỉ </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{ element.address }} </mat-cell> -->
+        <th mat-header-cell *matHeaderCellDef mat-sort-header width="35%"> Địa chỉ nhà </th>
+        <td mat-cell *matCellDef="let element" width="35%">
+          {{element.address}}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="identityCard">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> CMND </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ element.identityCard }}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="dayOfBirth">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Ngày sinh </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ element.dayOfBirth }}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="action">
+        <mat-header-cell *matHeaderCellDef class="justify-content-end">Action</mat-header-cell>
+        <mat-cell *matCellDef="let element" class="justify-content-end">
+          <ng-container>
+            <button mat-icon-button color="primary" (click)="modifyPg()">
+              <mat-icon aria-label="Example icon-button with a heart icon">create</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="deletePg()">
+              <mat-icon aria-label="Example icon-button with a heart icon">delete</mat-icon>
+            </button>
+          </ng-container>
+        </mat-cell>
+      </ng-container>
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-header-row *matHeaderRowDef="displayedSearchColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+    </mat-table>
+
+    <mat-paginator #matPaginator7 [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+  </div>
+</div>

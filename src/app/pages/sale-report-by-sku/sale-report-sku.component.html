@@ -1,0 +1,226 @@
+<div class="chung row">
+  <div class="dautien  container col-12 col-xl-4 pt-5">
+    <div class="card card-custom example example-compact gutter-b">
+      <div class="card-header">
+        <div class="card-title">
+      Thông tin bài kiểm tra
+        </div>
+        <div class="card-toolbar">
+          <div class="example-tools justify-content-center">
+            <button mat-raised-button color="accent" class="ml-2" (click)="create()">
+              <span class="material-icons">edit</span>Chỉnh sửa
+            </button>
+  
+          </div>
+        </div>
+      </div>
+        <!-- <app-filter (onFilterDataWithMoreInfo)="onFilterData($event)"></app-filter> -->
+        <mat-table #table [dataSource]="dataSource" matSort class="sale-report-table">
+          <ng-container matColumnDef="sku">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> SKU </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{ element.sku }} </mat-cell>
+          </ng-container>
+  
+          <ng-container matColumnDef="actual">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Actual </mat-header-cell>
+            <mat-cell *matCellDef="let element; let i = index" [ngClass]="{'first': i === 0}"> {{ element.actual }} </mat-cell>
+          </ng-container>
+  
+  
+  
+  
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+        </mat-table>
+        <div [hidden]="hidePagination">
+          <mat-paginator [length]="totalCount" [pageSizeOptions]="pageSizeOptions" [pageSize]="filter.pageSize"
+          [pageIndex]="filter.page" (page)="onPageChange($event)">
+  
+          </mat-paginator>
+        </div>
+      </div>
+  
+      <div class="card-body table-responsive"  *ngIf="isShowingDetail">
+        <div class="loading" *ngIf="loading">
+          <div class="loading-container">
+            <svg class="splash-spinner" viewBox="0 0 50 50">
+              <circle
+                class="path"
+                cx="25"
+                cy="25"
+                r="20"
+                fill="none"
+                stroke-width="5"
+              ></circle>
+            </svg>
+          </div>
+        </div>
+  
+          <ng-container matColumnDef="action">
+            <mat-header-cell *matHeaderCellDef class="justify-content-end">Action</mat-header-cell>
+            <mat-cell class="justify-content-end" *matCellDef="let element">
+              <ng-container>
+                <button mat-icon-button color="primary" title="update sale report" (click)="modify(element)">
+                  <mat-icon aria-label="Example icon-button with a heart icon">create</mat-icon>
+                </button>
+                <button mat-icon-button color="warn" (click)="deleteItem(element)">
+                  <mat-icon aria-label="Example icon-button with a heart icon">delete</mat-icon>
+                </button>
+              </ng-container>
+            </mat-cell>
+          </ng-container>
+  
+  
+      </div>
+  
+        <div class="card card-custom example example-compact gutter-b">
+          <div class="card-header">
+            <div class="card-title">
+          Danh sách mã đề
+            </div>
+            <div class="card-toolbar">
+              <div class="example-tools justify-content-center">
+                <button mat-raised-button color="accent" class="ml-2" (click)="create()">
+                  <span class="material-icons">edit</span>Xuất mã đề
+                </button>
+                <button mat-raised-button color="accent" class="ml-2" (click)="create()">
+                  <span class="material-icons">edit</span>Lưu mã đề
+                </button>
+  
+              </div>
+            </div>
+          </div>
+            <!-- <app-filter (onFilterDataWithMoreInfo)="onFilterData($event)"></app-filter> -->
+            <mat-table #table [dataSource]="dataSource" matSort class="sale-report-table">
+              <ng-container matColumnDef="sku">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> SKU </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{ element.sku }} </mat-cell>
+              </ng-container>
+  
+              <ng-container matColumnDef="actual">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Actual </mat-header-cell>
+                <mat-cell *matCellDef="let element; let i = index" [ngClass]="{'first': i === 0}"> {{ element.actual }} </mat-cell>
+              </ng-container>
+  
+  
+  
+  
+              <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+              <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+            </mat-table>
+            <div [hidden]="hidePagination">
+              <mat-paginator [length]="totalCount" [pageSizeOptions]="pageSizeOptions" [pageSize]="filter.pageSize"
+              [pageIndex]="filter.page" (page)="onPageChange($event)">
+  
+              </mat-paginator>
+            </div>
+          </div>
+  
+          <div class="card-body table-responsive"  *ngIf="isShowingDetail">
+            <div class="loading" *ngIf="loading">
+              <div class="loading-container">
+                <svg class="splash-spinner" viewBox="0 0 50 50">
+                  <circle
+                    class="path"
+                    cx="25"
+                    cy="25"
+                    r="20"
+                    fill="none"
+                    stroke-width="5"
+                  ></circle>
+                </svg>
+              </div>
+            </div>
+  
+              <ng-container matColumnDef="action">
+                <mat-header-cell *matHeaderCellDef class="justify-content-end">Action</mat-header-cell>
+                <mat-cell class="justify-content-end" *matCellDef="let element">
+                  <ng-container>
+                    <button mat-icon-button color="primary" title="update sale report" (click)="modify(element)">
+                      <mat-icon aria-label="Example icon-button with a heart icon">create</mat-icon>
+                    </button>
+                    <button mat-icon-button color="warn" (click)="deleteItem(element)">
+                      <mat-icon aria-label="Example icon-button with a heart icon">delete</mat-icon>
+                    </button>
+                  </ng-container>
+                </mat-cell>
+              </ng-container>
+          </div>
+  </div>
+        <div class="saucung col-12 col-xl-8 pt-5">
+          <div class="card card-custom example example-compact gutter-b">
+            <div class="card-header">
+              <div class="card-title">
+            Danh sách câu hỏi
+              </div>
+              <div class="card-toolbar">
+                <div class="example-tools justify-content-center">
+                  <button mat-raised-button color="accent" class="ml-2" (click)="create()">
+                    <span class="material-icons">edit</span>Thêm câu hỏi
+                  </button>
+  
+  
+                </div>
+              </div>
+            </div>
+              <!-- <app-filter (onFilterDataWithMoreInfo)="onFilterData($event)"></app-filter> -->
+              <mat-table #table [dataSource]="dataSource" matSort class="sale-report-table">
+                <ng-container matColumnDef="sku">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> SKU </mat-header-cell>
+                  <mat-cell *matCellDef="let element"> {{ element.sku }} </mat-cell>
+                </ng-container>
+  
+                <ng-container matColumnDef="actual">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Actual </mat-header-cell>
+                  <mat-cell *matCellDef="let element; let i = index" [ngClass]="{'first': i === 0}"> {{ element.actual }} </mat-cell>
+                </ng-container>
+  
+  
+  
+  
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+              </mat-table>
+              <div [hidden]="hidePagination">
+                <mat-paginator [length]="totalCount" [pageSizeOptions]="pageSizeOptions" [pageSize]="filter.pageSize"
+                [pageIndex]="filter.page" (page)="onPageChange($event)">
+  
+                </mat-paginator>
+              </div>
+            </div>
+  
+            <div class="card-body table-responsive"  *ngIf="isShowingDetail">
+              <div class="loading" *ngIf="loading">
+                <div class="loading-container">
+                  <svg class="splash-spinner" viewBox="0 0 50 50">
+                    <circle
+                      class="path"
+                      cx="25"
+                      cy="25"
+                      r="20"
+                      fill="none"
+                      stroke-width="5"
+                    ></circle>
+                  </svg>
+                </div>
+              </div>
+  
+                <ng-container matColumnDef="action">
+                  <mat-header-cell *matHeaderCellDef class="justify-content-end">Action</mat-header-cell>
+                  <mat-cell class="justify-content-end" *matCellDef="let element">
+                    <ng-container>
+                      <button mat-icon-button color="primary" title="update sale report" (click)="modify(element)">
+                        <mat-icon aria-label="Example icon-button with a heart icon">create</mat-icon>
+                      </button>
+                      <button mat-icon-button color="warn" (click)="deleteItem(element)">
+                        <mat-icon aria-label="Example icon-button with a heart icon">delete</mat-icon>
+                      </button>
+                    </ng-container>
+                  </mat-cell>
+                </ng-container>
+  
+  
+            </div>
+  
+        </div>
+</div>

@@ -1,0 +1,96 @@
+<h2 mat-dialog-title>{{title}}</h2>
+<form class="example-form" [formGroup]="pgManagementForm" (submit)="createPg()">
+  <mat-dialog-content class="mat-typography">
+    <div class="row">
+      <div class="col-md-12 col-sm-12">
+        <mat-form-field class="example-full-width">
+          <input matInput placeholder="Promotion Name" formControlName="name" [(ngModel)]="data.data.name">
+          <mat-error *ngIf="pgManagementForm.controls['name'].hasError('required')">
+            Promotion name is required
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6 col-sm-12">
+        <mat-form-field class="example-full-width">
+          <input matInput [matDatepicker]="pickerFrom" placeholder="Start Date (MM/dd/yyyy)" formControlName="start"
+          [(ngModel)]="data.data.start" readonly
+          >
+          <mat-datepicker-toggle matSuffix [for]="pickerFrom"></mat-datepicker-toggle>
+          <mat-datepicker #pickerFrom></mat-datepicker>
+            <mat-error *ngIf="pgManagementForm.controls['start'].hasError('required')">
+              End Date is required
+            </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="col-md-6 col-sm-12">
+        <mat-form-field class="example-full-width">
+          <input [(ngModel)]="data.data.end"
+          matInput [matDatepicker]="pickerTo" placeholder="End Date (MM/dd/yyyy)" formControlName="end"
+          readonly>
+          <mat-datepicker-toggle matSuffix [for]="pickerTo"></mat-datepicker-toggle>
+          <mat-datepicker #pickerTo></mat-datepicker>
+            <mat-error *ngIf="pgManagementForm.controls['end'].hasError('required')">
+              End Date is required
+            </mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6 col-sm-12">
+        <label id="example-radio-group-label">Promotion Type</label>
+        <br>
+        <mat-radio-group
+          aria-labelledby="example-radio-group-label"
+          class="example-radio-group"
+          [(ngModel)]="data.data.promotionType"
+          [ngModelOptions]="{standalone: true}"
+          >
+          <mat-radio-button class="example-radio-button" *ngFor="let type of promotionTypes" [value]="type.value">
+            {{type.label}}
+          </mat-radio-button>
+        </mat-radio-group>
+      </div>
+      <div class="col-md-6 col-sm-12" *ngIf="data.data.promotionType === 'discount'">
+        <label id="example-radio-group-label">  </label>
+        <input placeholder="%" style="width: 100%;" class="form-control" type="number" min="0"
+        [(ngModel)]="data.data.discount"
+        [ngModelOptions]="{standalone: true}"/>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 col-sm-12">
+        <mat-form-field class="example-chip-list example-full-width">
+          <mat-label>Products</mat-label>
+          <mat-chip-list #chipList aria-label="Products">
+            <mat-chip
+              *ngFor="let fruit of fruits"
+              [selectable]="selectable"
+              [removable]="removable"
+              (removed)="remove(fruit)">
+              {{fruit}}
+              <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+            </mat-chip>
+            <input
+              placeholder="New fruit..."
+              #fruitInput
+              [formControl]="fruitCtrl"
+              [matAutocomplete]="auto"
+              [matChipInputFor]="chipList"
+              [matChipInputSeparatorKeyCodes]="separatorKeysCodes">
+          </mat-chip-list>
+          <mat-autocomplete #auto (optionSelected)="selected($event)">
+            <mat-option *ngFor="let fruit of filteredFruits" [value]="fruit.id">
+              {{fruit.name}}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+      </div>
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Cancel</button>
+    <button mat-button type="submit" cdkFocusInitial>{{buttonTitle}}</button>
+  </mat-dialog-actions>
+</form>

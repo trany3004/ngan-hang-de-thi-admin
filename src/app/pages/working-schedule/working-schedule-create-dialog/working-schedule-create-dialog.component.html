@@ -1,0 +1,68 @@
+<h2 mat-dialog-title>{{title}}</h2>
+<form class="example-form" [formGroup]="pgManagementForm" (submit)="createPg()">
+  <div class="loading" *ngIf="loading">
+    <div class="loading-container">
+      <svg class="splash-spinner" viewBox="0 0 50 50">
+        <circle
+          class="path"
+          cx="25"
+          cy="25"
+          r="20"
+          fill="none"
+          stroke-width="5"
+        ></circle>
+      </svg>
+    </div>
+  </div>
+  <mat-dialog-content class="mat-typography">
+    <div class="row">
+      <div class="col-md-6">
+        <mat-form-field class="example-full-width">
+          <mat-select placeholder="User" formControlName="pg_user">
+            <mat-option *ngFor="let user of users" [value]="user.id">
+              {{ user.username }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="pgManagementForm.controls['pg_user'].hasError('required')">
+            User is required
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="col-md-6">
+        <mat-form-field class="example-full-width">
+          <mat-select placeholder="Outlet" formControlName="pg_outlet">
+            <mat-option *ngFor="let outlet of outlets" [value]="outlet.id">
+              {{ outlet.name }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="pgManagementForm.controls['pg_outlet'].hasError('required')">
+            Outlet is required
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <mat-form-field class="example-full-width">
+          <input matInput type="datetime-local" placeholder="Start Date" formControlName="startDate" [ngModel]="filterDateFrom | date:'yyyy-MM-ddTHH:mm'">
+          <mat-error *ngIf="pgManagementForm.controls['startDate'].hasError('required')">
+            Start Date is required
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="col-md-6">
+        <mat-form-field class="example-full-width">
+          <input matInput type="datetime-local" placeholder="End Date" formControlName="endDate" [ngModel]="filterDateTo | date:'yyyy-MM-ddTHH:mm'">
+          <mat-error *ngIf="pgManagementForm.controls['endDate'].hasError('required')">
+            End Date is required
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Cancel</button>
+    <button mat-button type="submit" cdkFocusInitial>{{ data && data.type === 'create' ? 'Create' : 'Update'}}</button>
+  </mat-dialog-actions>
+</form>

@@ -1,0 +1,24 @@
+.example-full-width {
+    width: 100%;
+}
+
+:host {
+    ::ng-deep mat-dialog-content.mat-dialog-content.mat-typography {
+        height: 100%;
+    }
+    ::ng-deep mat-carousel .carousel {
+        height: 100% !important;
+        .carousel-indicators {
+            left: 0;
+            transform: none;
+            -webkit-transform: none;
+        }
+        ul.carousel-list {
+            height: 100% !important;
+            li.carousel-slide {
+                height: 100% !important;
+                padding-bottom: 0 !important;
+            }
+        }
+    }
+}

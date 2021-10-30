@@ -1,0 +1,14 @@
+:host ::ng-deep {
+    mat-table.sale-report-table {
+        mat-header-row.mat-header-row {
+            border-bottom: none;
+            padding-bottom: 0px;
+        }
+        mat-row {
+            mat-cell.first {
+                font-style: italic;
+                opacity: 0.8;
+            }
+        }
+    }
+}
