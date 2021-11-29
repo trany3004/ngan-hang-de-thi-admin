@@ -1,221 +1,288 @@
+import { MathContent } from './../../math/math-content';
 import {
-    AfterViewInit,
-    ChangeDetectorRef,
-    Component, Inject, OnDestroy, OnInit, ViewChild,
-  } from '@angular/core';
-  import { FormControl } from '@angular/forms';
-  import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
-  import { MatSort } from '@angular/material/sort';
-  import { MatTableDataSource } from '@angular/material/table';
-  import { DeleteDialogComponent } from '../common/delete-dialog/delete-dialog.component';
-  import { ExportService } from 'src/app/services/export.service';
-  import { UserService } from 'src/app/services/user.service';
-  import { forkJoin, Subscription } from 'rxjs';
-  import { CategoryService } from 'src/app/services/category.service';
-  import { ProductService } from 'src/app/services/product.service';
-  import { CurrencyService } from '../common/currency-pipe/currency-pipe.service';
-  import { ToastrService } from 'ngx-toastr';
-import { PromotionService } from 'src/app/services/promotion.service';
-import { DatePipe } from '@angular/common';
-import { PromotionCreateDialogComponent } from './promotion-create-dialog/promotion-create-dialog.component';
-  
-  @Component({
-    selector: 'app-product-management',
-    templateUrl: './promotion-management.component.html',
-    styleUrls: ['./promotion-management.component.scss'],
-  })
-  export class PromotionManagementComponent implements OnInit, AfterViewInit, OnDestroy {
-    @ViewChild(MatSort) sort: MatSort;
-    pageSizeOptions = [5, 10, 25, 100];
-    displayedColumns: string[] = ['name',  'products', 'type', 'discount',  'startDate', 'endDate', 'action'];
-    dataSource = new MatTableDataSource([]);
-    totalCount = 0;
-    filter: any = {
-      page: 0,
-      pageSize: this.pageSizeOptions[0],
-      name_contains: null
-    };
-  
-    exporting = false;
-    loading = false;
-    searchTimeout;
-    userSubscription: Subscription;
-  
-    ngAfterViewInit() {
-      this.dataSource.sort = this.sort;
-    }
-  
-  
-  
-    constructor(public dialog: MatDialog, private exportService: ExportService,
-      private promotionService: PromotionService, private currencyService: CurrencyService,
-      private toastr: ToastrService,
-      private datePipe: DatePipe
-    ) { }
-    ngOnDestroy(): void {
-      if (this.userSubscription) {
-        this.userSubscription.unsubscribe();
-      }
-    }
-  
-    ngOnInit() {
-      this.init();
-    }
-  
-    init() {
-      this.loading = true;
-      this.userSubscription = forkJoin([this.promotionService.fetch(this.filter), this.promotionService.getTotalRecords(this.filter)])
-        .subscribe(([data, total]) => {
-          this.mapData(data);
-          this.totalCount = total;
-          this.loading = false;
-        }, _ => this.loading = false);
-    }
-  
-    mapData(promotions) {
-      (promotions || []).forEach(element => {
-        element.startDate = this.datePipe.transform(new Date(new Date(element.start).getTime() - (7 * 60*60*1000)), 'dd/MM/yyyy')
-        element.endDate = this.datePipe.transform(new Date(new Date(element.end).getTime() - (7 * 60*60*1000)), 'dd/MM/yyyy');
-      });
-      this.dataSource = new MatTableDataSource(promotions);
-      this.dataSource.sort = this.sort;
-    }
-  
-    create() {
-      const dialogRef = this.dialog.open(PromotionCreateDialogComponent, {
-        data: { type: 'create', data: {promotionType: 'Buy1get1free'} },
-        width: '50%'
-      });
-  
-      dialogRef.afterClosed().subscribe(result => {
-        if (result) {
-          this.filter.page = 0;
-          this.filter.pageSize = this.pageSizeOptions[0];
-          this.init();
-        }
-      });
-    }
-  
-    update(data) {
-      const dialogRef = this.dialog.open(PromotionCreateDialogComponent, {
-        data: {
-          type: 'update',
-          data: data
-        },
-        width: '50%'
-      });
-  
-      dialogRef.afterClosed().subscribe(result => {
-        if (result) {
-          this.filter.page = 0;
-          this.filter.pageSize = this.pageSizeOptions[0];
-          this.init();
-        }
-      });
-    }
-  
-    deletePg(id) {
-      const dialogRef = this.dialog.open(DeleteDialogComponent, {
-        data: {
-          header: 'Delete Product',
-          title: 'Do you want to delete this product?'
-        }
-      });
-  
-      dialogRef.afterClosed().subscribe(result => {
-        if (result) {
-          this.promotionService.delete(id).subscribe(res => {
-            this.filter.page = 0;
-            this.filter.pageSize = this.pageSizeOptions[0];
-            this.init();
-          });
-        }
-      });
-    }
-  
-    export() {
-      this.exporting = true;
-      const fileName = 'promotions';
-      const header: any = {
-        name: 'Name',
-        products: 'Products',
-        type: 'Type',
-        discount: 'Discount',
-        startDate: 'Start Date',
-        endDate: 'End Date'
-      }
-      const fields = ['name', 'products', 'type', 'discount', 'startDate', 'endDate'];
-      let data = [header];
-        this.exporting = true;
-        let newFilter = {...this.filter};
-        delete newFilter.page;
-        delete newFilter.pageSize;
-        this.promotionService.fetch(newFilter)
-          .subscribe((rs: any[]) => {
-            (rs || []).forEach(element => {
-              element.name = element.name;
-              element.discount = element.discount;
-              element.price = this.currencyService.transform(element.price, true);
-              for(const pro in element) {
-                if (!fields.includes(pro)) {
-                  delete element[pro];
-                }
-              }
-            });
-          data = data.concat(rs);
-          this.exportService.exportExcel(data, fileName, true, [fileName]);
-          this.exporting = false;
-        }, _ => {
-          this.exporting = false;
-        })
-    }
-  
-    onPageChange({ pageIndex, pageSize }) {
-      this.filter.page = pageIndex;
-      this.filter.pageSize = pageSize;
-      this.init();
-    }
-  
-    changeSearch() {
-      // console.log(this.filter)
-      if (this.searchTimeout) {
-        clearTimeout(this.searchTimeout);
-      }
-      this.loading = true;
-      this.searchTimeout = setTimeout(() => this.init(), 200);
-    }
-  
-    clearFilter() {
-      for (const propName in this.filter) {
-        if (!['page', 'pageSize'].includes(propName)) {
-          this.filter[propName] = null;
-        }
-      }
-      this.init();
-    }
-  
-    openProductByOutlet(element) {
-    //   const dialogRef = this.dialog.open(ProductQuantityDialogComponent, {
-    //     data: element,
-    //     width: '50%'
-    //   });
-  
-    //   dialogRef.afterClosed().subscribe(result => {
-    //     if (result) {
-    //       this.filter.page = 0;
-    //       this.filter.pageSize = this.pageSizeOptions[0];
-    //       this.init();
-    //     }
-    //   });
-    }
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  Inject,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from "@angular/core";
+import {
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from "@angular/forms";
+import { KhoiHocService } from "src/app/services/khoihoc.service";
+import { ChuongService } from "src/app/services/chuong.service";
+import { MonHocService } from "src/app/services/monhoc.service";
 
-    displayType(type) {
-        if (type === 'Buy1get1free') {
-            return 'Mua 1 tặng 1'
+import { PromotionService } from "src/app/services/promotion.service";
+import { OutletService } from "src/app/services/outlet.service";
+import { combineLatest, Observable } from "rxjs";
+import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
+
+import * as ClassicEditor from "../../../assets/js/ck-editor-math-type/ckeditor.js";
+import { ActivatedRoute } from "@angular/router";
+import { delay } from "rxjs/operators";
+import { T } from '@angular/cdk/keycodes';
+
+@Component({
+  selector: "app-product-management",
+  templateUrl: "./promotion-management.component.html",
+  styleUrls: ["./promotion-management.component.scss"],
+})
+export class PromotionManagementComponent {
+  title = "ckeditorwithMath";
+  data = "";
+  editorData = "";
+  alphabet = [
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+    "F",
+    "G",
+    "H",
+    "I",
+    "J",
+    "K",
+    "L",
+    "M",
+    "N",
+    "O",
+    "P",
+    "Q",
+    "R",
+    "S",
+    "T",
+    "U",
+    "V",
+    "W",
+    "X",
+    "Y",
+    "Z",
+  ];
+  favoriteSeason: string;
+  // seasons: string[] = ['Winter', 'Spring', 'Summer', 'Autumn'];
+
+  formGroup: FormGroup;
+  regions: any[] = [];
+  cities: any[] = [];
+  groups: any[] = [];
+  // title: string = '';
+  monHocList$: Observable<any[]>;
+  khoiHocList$: Observable<any[]>;
+  chuongList$: Observable<any[]>;
+  outletList$: Observable<any[]>;
+
+  mode = "create";
+  dapAnDung = null;
+
+  id;
+
+  loading = false;
+
+  public Editor = ClassicEditor;
+
+  constructor(
+    private fb: FormBuilder,
+    private promotionService: PromotionService,
+    private monHocService: MonHocService,
+    private outletService: OutletService,
+    private chuongHocService: ChuongService,
+    private khoiService: KhoiHocService,
+    private router: ActivatedRoute
+  ) {
+    this.formGroup = this.fb.group({
+      ten: [null, Validators.required],
+      monhoc: [null, Validators.required],
+      noidung: ['', Validators.required],
+      chuong: [null, Validators.required],
+      khoihoc: [null, Validators.required],
+      chude: [null, Validators.required],
+      danhSachDapAn: this.fb.array([]),
+      loai: [null, []],
+      mucDo: [null, Validators.required],
+      giaithich: ['', []],
+      dapAnDung: this.fb.array([])
+    });
+  }
+
+  get danhSachDapAn(): FormArray {
+    return this.formGroup.get("danhSachDapAn") as FormArray;
+  }
+
+  get danhSachDapAnDung(): FormArray {
+    return this.formGroup.get("dapAnDung") as FormArray;
+  }
+
+  changeRadio(i) {
+    console.log(i)
+    const selectedList = this.danhSachDapAn.value as any;
+    selectedList.forEach((c, index) => c.selected = index === i ? true : false);
+    this.danhSachDapAn.patchValue(selectedList);
+  }
+  ngOnInit() {
+    const id = this.router.snapshot.paramMap.get("id");
+    this.mode = id ? "update" : "create";
+    this.id = id;
+    this.init();
+    combineLatest(
+      this.formGroup.get("monhoc").valueChanges.pipe(delay(200)),
+      this.formGroup.get("khoihoc").valueChanges.pipe(delay(200)),
+      this.formGroup.get("chuong").valueChanges.pipe(delay(200))
+    ).subscribe(() => {
+      if (!this.disableChuDe()) {
+        this.outletList$ = this.outletService.getChuDeByCondition({
+          mon: this.formGroup.get("monhoc").value,
+          khoi: this.formGroup.get("khoihoc").value,
+          chuong: this.formGroup.get("chuong").value,
+        });
+      }
+      if (!this.disableChuong()) {
+        this.chuongList$ = this.chuongHocService.get({
+          monhoc: this.formGroup.get("monhoc").value,
+          khoihoc: this.formGroup.get("khoihoc").value,
+        });
+      }
+    });
+    combineLatest(
+      this.formGroup.get("monhoc").valueChanges.pipe(delay(200)),
+      this.formGroup.get("khoihoc").valueChanges.pipe(delay(200)),
+    ).subscribe(() => {
+      if (!this.disableChuong()) {
+        this.chuongList$ = this.chuongHocService.get({
+          monhoc: this.formGroup.get("monhoc").value,
+          khoihoc: this.formGroup.get("khoihoc").value,
+        });
+      }
+    });
+  }
+
+  init() {
+    this.monHocList$ = this.monHocService.get();
+    this.khoiHocList$ = this.khoiService.get();
+
+    if (this.mode === "update") {
+      this.loading = true;
+      this.promotionService.getCauHoiById(this.id).subscribe((dataUpdated) => {
+        if (dataUpdated) {
+          this.formGroup.controls["monhoc"].setValue(dataUpdated.monhoc);
+          this.formGroup.controls["khoihoc"].setValue(dataUpdated.khoihoc);
+          this.formGroup.controls["chuong"].setValue(dataUpdated.chuong);
+          this.formGroup.controls["noidung"].setValue(dataUpdated.cauhoi);
+          this.formGroup.controls["chude"].setValue(dataUpdated.chude._id);
+          this.formGroup.controls["chude"].setValue(dataUpdated.chude._id);
+          this.formGroup.controls["loai"].setValue(dataUpdated.isDrapDrop ? '3' : dataUpdated.multipleAnswer ? '2' : '1');
+          this.formGroup.controls["mucDo"].setValue(String(dataUpdated.mucDo));
+          this.formGroup.controls["giaithich"].setValue(dataUpdated.giaithich);
+          if (dataUpdated.isDrapDrop) {
+            const dapAns = dataUpdated.dapAn.map((d) => ({
+              selected: false,
+              noidung: d
+            }))
+            dapAns.forEach((e) => {
+              this.addAnswer()
+            })
+            this.formGroup.controls['danhSachDapAn'].patchValue(dapAns);
+            const dapAnDung = dataUpdated.dapAnDung.map((d) => {
+              const index = dataUpdated.dapAn.indexOf(d);
+              return index
+            })
+            this.formGroup.controls['dapAnDung'].patchValue(dapAnDung);
+          } else {
+            const dapAns = dataUpdated.dapAn.map((d) => ({
+              selected: dataUpdated.dapAnDung.indexOf(d) > -1,
+              noidung: d
+            }))
+            dapAns.forEach((e) => {
+              this.addAnswer()
+            })
+            this.formGroup.controls['danhSachDapAn'].patchValue(dapAns);
+          }
         }
-        if (type === 'discount') {
-            return 'Giảm giá'
-        }
+        this.loading = false
+      }, () => this.loading = false);
     }
   }
+
   
+
+  addAnswer() {
+    const dataFormGroup = this.fb.group({
+      selected: false
+    })
+    dataFormGroup.addControl('noidung', new FormControl('', Validators.required));
+    this.danhSachDapAn.push(dataFormGroup);
+    const dapAnDung = this.fb.control(this.danhSachDapAn.controls.length - 1);
+    this.danhSachDapAnDung.push(dapAnDung);
+    console.log(this.danhSachDapAnDung)
+    console.log(this.danhSachDapAn.value[this.danhSachDapAnDung.value[0]]['noidung'])
+
+  }
+
+  xoaDapAn(i) {
+    this.danhSachDapAn.removeAt(i);
+    const index = this.danhSachDapAnDung.value.find((e) => e === i);
+    this.danhSachDapAnDung.removeAt(index);
+    const value = this.danhSachDapAnDung.value.map((i, index) => index);
+    this.danhSachDapAnDung.patchValue(value);
+  }
+
+  disableChuong() {
+    return (
+      !this.formGroup.get("monhoc").value ||
+      !this.formGroup.get("khoihoc").value
+    );
+  }
+  disableChuDe() {
+    return (
+      !this.formGroup.get("monhoc").value ||
+      !this.formGroup.get("khoihoc").value ||
+      !this.formGroup.get("chuong").value
+    );
+  }
+
+  drop(event: CdkDragDrop<string[]>) {
+    const value = this.danhSachDapAnDung.value;
+    moveItemInArray(value, event.previousIndex, event.currentIndex);
+    this.danhSachDapAnDung.patchValue(value);
+  }
+
+  getValue(i): MathContent {
+   const index = this.dapAnDung.value[i];
+   return {mathml: this.danhSachDapAn.value[index].noidung};
+  }
+
+  save() {
+    console.log(this.formGroup.value);
+    const {chude, noidung, giaithich, danhSachDapAn, mucDo, loai} = this.formGroup.value;
+    const payload: any = {
+      isDrapDrop: loai === '3' ? true : false,
+      chude,
+      cauhoi: noidung,
+      giaithich,
+      dapAn: danhSachDapAn.map((e) => e.noidung),
+      mucDo: Number(mucDo)
+    }
+    if (loai !== '3') {
+      payload.dapAnDung = danhSachDapAn.filter((e) => e.selected).map((e) => e.noidung)
+    } else {
+      const dapAn = [];
+      this.danhSachDapAnDung.value.forEach((e) => {
+        dapAn.push(danhSachDapAn[e].noidung);
+      })
+      payload.dapAnDung = dapAn;
+    }
+    this.promotionService.createCauHoi(payload)
+    .subscribe(() => {
+      console.log('Tao xong')
+    })
+    //call All
+
+  }
+}

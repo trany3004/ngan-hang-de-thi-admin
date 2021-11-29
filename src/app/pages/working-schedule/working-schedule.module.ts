@@ -1,3 +1,4 @@
+import { MathModule } from './../../math/math.module';
 import { NgModule } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { RouterModule } from '@angular/router';
@@ -42,6 +43,7 @@ import { WorkingScheduleCreateDialogComponent } from './working-schedule-create-
     MatMomentDateModule,
     MatSortModule,
     PGCommonModule,
+    MathModule.forRoot(),
     RouterModule.forChild([
       {
         path: '',

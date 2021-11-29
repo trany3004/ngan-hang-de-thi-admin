@@ -79,7 +79,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           this.authService.storeUserInfo(user)
           console.log(localStorage.getItem('token'))
           console.log(localStorage.getItem('user.username'))
-          this.router.navigate(['/dashboard'])
+          this.router.navigate(['/cau-hoi'])
         } else {
           this.hasError = true
         }

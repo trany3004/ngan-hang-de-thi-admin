@@ -32,7 +32,9 @@ export class MathDirective implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes);
+    if (changes.appMath && !changes.appMath.firstChange) {
+        this.service.render(this._el, this.appMath);
+      };
   }
 
   ngOnDestroy(): void {

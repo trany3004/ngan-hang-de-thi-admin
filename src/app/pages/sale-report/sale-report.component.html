@@ -29,7 +29,7 @@
         </svg>
       </div>
     </div>
-    <app-filter (onFilterDataWithMoreInfo)="onFilterData($event)"></app-filter>
+    <!-- <app-filter (onFilterDataWithMoreInfo)="onFilterData($event)"></app-filter> -->
     <mat-table #table [dataSource]="dataSource" matSort class="sale-report-table">
       <ng-container matColumnDef="saleTarget">
         <mat-header-cell *matHeaderCellDef mat-sort-header> Sales Target </mat-header-cell>

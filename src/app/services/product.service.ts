@@ -17,6 +17,25 @@ export class ProductService extends BaseService {
     super();
   }
 
+  getChuong(): Observable<any[]> {
+    // CAll API get chu ded
+     return this.http.get<any[]>(`/api/v1/chuong-hoc`);
+   }
+ 
+   createChuong(data): Observable<any> {
+     return this.http.post<any>(`/api/v1/chuong-hoc`, data);
+   }
+ 
+   updateChuong(id, data): Observable<any> {
+     return this.http.put<any>(`/api/v1/chuong-hoc/${id}`, data);
+   }
+ 
+   xoaChuong(id): Observable<any> {
+     return this.http.delete<any>(`/api/v1/chuong-hoc/${id}`);
+   }
+ 
+   
+
   fetch(filter?: any): Observable<Product[]> {
     let query = '';
     if (filter) {
@@ -34,6 +53,9 @@ export class ProductService extends BaseService {
     }
     return this.http.get<number>(`/api/v2/products/count${query ? '?' : ''}${query}`);
   }
+
+  
+  
 
   create(data): Observable<Product[]> {
     return this.http.post<Product[]>('/api/v2/products', data);

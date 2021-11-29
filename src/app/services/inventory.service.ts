@@ -17,12 +17,16 @@ export class InventoryService extends BaseService {
     super();
   }
 
-  fetch(filter?: any): Observable<Inventory[]> {
+  fetch(filter?: any): Observable<any> {
     let query = '';
     if (filter) {
-      query = queryString.stringify(this.generateFilter(filter));
+      query = queryString.stringify(filter);
     }
-    return this.http.get<Inventory[]>(`/api/v2/inventories?_sort=createdAt:DESC${query ? '&' : ''}${query}`);
+    return this.http.get<any>(`/api/v1/on-tap${query ? '?' : ''}${query}`);
+  }
+
+  taoCauHoiTuDong(data): Observable<any[]> {
+    return this.http.post<any>(`/api/v1/on-tap/random`, data);
   }
 
   fetchByIds(ids=[], filter): Observable<Inventory[]> {

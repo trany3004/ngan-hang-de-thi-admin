@@ -17,9 +17,10 @@ export class ChuongService extends BaseService {
     super();
   }
 
-  get(): Observable<any[]> {
+  get(query?): Observable<any[]> {
+    const queryString = query ? Object.keys(query).map((key) => `${key}=${query[key]}`).join('&') : ''
    // CAll API get chu ded
-    return this.http.get<any[]>(`/api/v1/chuong-hoc`);
+    return this.http.get<any[]>(`/api/v1/chuong-hoc${queryString ? '?'+queryString : ''}`);
   }
 
   getTotalRecords(filter?: any): Observable<number> {

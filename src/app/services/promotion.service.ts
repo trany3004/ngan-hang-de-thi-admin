@@ -17,12 +17,44 @@ export class PromotionService extends BaseService {
     super();
   }
 
-  fetch(filter?: any): Observable<Product[]> {
-    let query = '';
-    if (filter) {
-      query = queryString.stringify(this.generateFilter(filter));
+
+  getCauHoi(): Observable<any[]> {
+    // CAll API get chu ded
+     return this.http.get<any[]>(`/api/v1/cau-hoi`);
+   }
+ 
+   getCauHoiById(id): Observable<any> {
+     // CAll API get chu ded
+      return this.http.get<any>(`/api/v1/cau-hoi/${id}`);
     }
-    return this.http.get<Product[]>(`/api/v2/promotions?isDelete=false${query ? '&' : ''}${query}`);
+ 
+   createCauHoi(data): Observable<any> {
+     return this.http.post<any>(`/api/v1/cau-hoi`, data);
+   }
+ 
+   updateCauHoi(id, data): Observable<any> {
+     return this.http.put<any>(`/api/v1/cau-hoi/${id}`, data);
+   }
+ 
+   xoaCauHoi(id): Observable<any> {
+     return this.http.delete<any>(`/api/v1/cau-hoi/${id}`);
+   }
+   demCauHoi(id): Observable<any> {
+    return this.http.delete<any>(`/api/v1/cau-hoi/${id}`);
+  }
+ 
+
+  fetch(filter?: any): Observable<any[]> {
+    let query = '';
+    const condition = {}
+    if (filter) {
+      Object.keys(filter).map((k) => {
+        if (filter[k]) condition[k] = filter[k]
+      })
+      
+      query = queryString.stringify(condition);
+    }
+    return this.http.get<any[]>(`/api/v1/cau-hoi${query ? '?' : ''}${query}`);
   }
 
   getTotalRecords(filter?: any): Observable<number> {

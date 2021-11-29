@@ -1,25 +1,77 @@
-<div class="card card-custom example example-compact gutter-b">
-  <ul>
+<div [formGroup] = "formGroup">
   
-    <li>
-     <ckeditor [(ngModel)]="model.editorData" [editor]="Editor"></ckeditor>
-    </li>
-    <li>
-      <button  id="btn" (click)='showval()'>click</button>
-    </li>
-    <li>
-      <!-- <ckeditor data="{{data}}"></ckeditor> -->
-       {{data}} <br>
-    </li>
+  <table class="example-full-width" cellspacing="0"><tr>
+    <mat-form-field class="example-full-width" appearance="fill">
+      <mat-label>Tên chủ đề</mat-label>
+  
+      <input matInput formControlName="ten">
+    </mat-form-field>
+  
+    <mat-form-field appearance="fill" class="example-full-width">
+      <mat-label>Môn học</mat-label>
+      <mat-select formControlName="monhoc">
+        <mat-option [value]="option._id" *ngFor="let option of monHocList$ | async">{{option.ten}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  
+    <mat-form-field appearance="fill" class="example-full-width">
+      <mat-label>Khối</mat-label>
+      <mat-select formControlName="khoihoc">
+        <mat-option [value]="option._id" *ngFor="let option of khoiHocList$ | async">{{option.ten}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  
+    <mat-form-field appearance="fill" class="example-full-width">
+      <mat-label>Chương</mat-label>
+      <mat-select formControlName="chuong">
+        <mat-option [value]="option._id" *ngFor="let option of chuongList$ | async">{{option.ten}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <div appearance="fill" class="example-full-width">
+      <input type="file" id="myfile" name="myfile" accept="image/*" (change)="onFileSelected($event, 'insert')">
+    </div>
+    <div class="row" *ngIf="imageUpdated && imageUpdated.url">
+      <div class="d-flex flex-wrap">
+        <div class="d-flex align-items-center mb-2">
+          <img src="{{imageUpdated.url}}" style="border: 1px solid #a1a1a1; width:120px; height:120px;">
+          <input type="file" id="imgupload" accept="image/*" (change)="onFileSelected($event, 'update')" style="display: none" #fileinput />
+          <div>
+            <div matTooltip="Choose file" (click)="fileinput.click()">
+                <i class="fas fa-pencil-alt"></i>
+            </div>
+              <mat-icon aria-label="Example icon-button with a heart icon" color="warn" (click)="deleteImage()" style="cursor: pointer;">delete</mat-icon>
+          </div>
+        </div>
+    </div>
+    </div>
+  
+  </tr></table>
+  
+  
+  
+  
+  
+  <div class="card card-custom example example-compact gutter-b">
+    <ul>
+  
       <li>
-      <hr>
-      <ckeditor [data]="editorData"></ckeditor>
-    </li>  <li>
-      <div>
-        MathMIL
-        <hr>
-        <div [appMath]="mathMl"></div>
-      </div>
-    </li>
-  </ul>
+       <ckeditor formControlName="noidung" [editor]="Editor"></ckeditor>
+      </li>
+      <li>
+        <button  id="btn" (click)='showval()'>click</button>
+      </li>
+      <!-- <li> -->
+        <!-- <ckeditor data="{{data}}"></ckeditor> -->
+         <!-- {{data}} <br> -->
+      <!-- </li> -->
+    </ul>
+  </div>
+  
+  <mat-dialog-actions  align="end" class="ml-2" >
+    <button mat-button  color="accent" (click) = "save()">
+      Lưu
+    </button>
+  </mat-dialog-actions>
+  
+  
 </div>

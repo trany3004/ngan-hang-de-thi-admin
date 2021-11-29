@@ -70,7 +70,7 @@
         aria-haspopup="true"
         routerLinkActive="menu-item-active"
       >
-        <a class="menu-link" routerLink="/working-schedule" routerLinkActive="active">
+        <a class="menu-link" routerLink="/cau-hoi" routerLinkActive="active">
           <span
             [inlineSVG]="'./assets/media/svg/icons/Map/Marker1.svg'"
             cacheSVG="true"
@@ -138,7 +138,7 @@
       </li>
 
       <li class="menu-section">
-        <h4 class="menu-text">Ôn tập lý thuyết</h4>
+        <h4 class="menu-text">Ôn tập </h4>
         <i class="menu-icon flaticon-more-v2"></i>
       </li>
       <li
@@ -152,9 +152,23 @@
           cacheSVG="true"
           class="svg-icon menu-icon"
         ></span>
-        <span class="menu-text">Ôn tập</span>
+        <span class="menu-text">Ôn tập lý thuyết</span>
       </a>
     </li>
+    <li
+    class="menu-item"
+    aria-haspopup="true"
+    routerLinkActive="menu-item-active"
+  >
+    <a class="menu-link" routerLink="/inventory" routerLinkActive="active">
+      <span
+        [inlineSVG]="'./assets/media/svg/icons/General/Clipboard.svg'"
+        cacheSVG="true"
+        class="svg-icon menu-icon"
+      ></span>
+      <span class="menu-text">Ôn tập vận dụng</span>
+    </a>
+  </li>
 
 
     <li class="menu-section">
@@ -228,6 +242,25 @@ routerLinkActive="menu-item-active"
     class="svg-icon menu-icon"
   ></span>
   <span class="menu-text">Danh sách chủ đề</span>
+</a>
+</li>
+
+<li class="menu-section">
+  <h4 class="menu-text">CHƯƠNG</h4>
+  <i class="menu-icon flaticon-more-v2"></i>
+</li>
+<li
+class="menu-item"
+aria-haspopup="true"
+routerLinkActive="menu-item-active"
+>
+<a class="menu-link" routerLink="/product-management" routerLinkActive="active">
+  <span
+    [inlineSVG]="'./assets/media/svg/icons/General/Clipboard.svg'"
+    cacheSVG="true"
+    class="svg-icon menu-icon"
+  ></span>
+  <span class="menu-text">Danh sách chương</span>
 </a>
 </li>
 

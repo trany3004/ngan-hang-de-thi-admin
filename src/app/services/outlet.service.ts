@@ -22,7 +22,22 @@ export class OutletService extends BaseService {
     return this.http.get<any[]>(`/api/v1/chu-de`);
   }
 
-  createChuDe(data): Observable<any> {
+  getChuDeByCondition(query?): Observable<any[]> {
+    // CAll API get chu ded
+    const queryString = query ? Object.keys(query).map((key) => `${key}=${query[key]}`).join('&') : ''
+     return this.http.get<any[]>(`/api/v1/chu-de${queryString ? '?'+queryString : ''}`);
+   }
+
+  getChuDeById(id): Observable<any> {
+    // CAll API get chu ded
+     return this.http.get<any>(`/api/v1/chu-de?id=${id}`);
+   }
+
+  createChuDe(data, file, fileName): Observable<any> {
+    if (file) {
+      data.file = file;
+      data.fileName = fileName;
+    }
     return this.http.post<any>(`/api/v1/chu-de`, data);
   }
 

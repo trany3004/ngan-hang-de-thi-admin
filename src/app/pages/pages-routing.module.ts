@@ -17,21 +17,30 @@ const routes: Routes = [
         loadChildren: () =>
           import('./builder/builder.module').then((m) => m.BuilderModule),
       },
+      // bài kiểm tra
       {
         path: 'pg-management',
         loadChildren: () =>
           import('./pg-management/pg-management.module').then((m) => m.PGManagementModule),
       },
+      // ôn tập
       {
         path: 'competitors',
         loadChildren: () =>
           import('./competitors/competitors.module').then((m) => m.CompetitorsModule),
       },
       {
-        path: 'working-schedule',
+        path: 'competitors/:id',
+        loadChildren: () =>
+          import('./competitors/competitors.module').then((m) => m.CompetitorsModule),
+      },
+      // câu hỏi
+      {
+        path: 'cau-hoi',
         loadChildren: () =>
           import('./working-schedule/working-schedule.module').then((m) => m.WorkingScheduleModule),
       },
+      //Bài kiểm tra ngoài hệ thống
       {
         path: 'inventory',
         loadChildren: () =>
@@ -42,47 +51,58 @@ const routes: Routes = [
       //   loadChildren: () =>
       //     import('./lot-date/lot-date.module').then((m) => m.LotDateModule),
       // },
+
+      //Quản lý lớp học
       {
         path: 'evaluations',
         loadChildren: () =>
           import('./evaluations/evaluations.module').then((m) => m.EvaluationsModule),
       },
+      //Cấu trúc bài kiểm tra - setting
       {
         path: 'categories',
         loadChildren: () =>
           import('./categories/categories.module').then((m) => m.CategoriesModule),
       },
+
+      //Lớp chủ nhiệm
       {
         path: 'sales-report',
         loadChildren: () =>
           import('./sale-report/sale-report.module').then((m) => m.SaleReportModule),
       },
+      //Danh sách cấu hình bài kiểm tra
       {
         path: 'checkin-management',
         loadChildren: () =>
           import('./checkin-management/checkin-management.module').then((m) => m.CheckinManagementModule),
       },
-     
+     // Chủ đề
       {
         path: 'outlet-management',
         loadChildren: () =>
           import('./outlet-management/outlet-management.module').then((m) => m.OutletManagementModule),
       },
+      //Thống kê(chưa làm)
       {
         path: 'report-management',
         loadChildren: () =>
           import('./report-management/report-management.module').then((m) => m.ReportManagementModule),
       },
+
+    //Chương
       {
         path: 'product-management',
         loadChildren: () =>
           import('./product-management/product-management.module').then((m) => m.ProductManagementModule),
       },
+      //Quản lý tài khoản
       {
         path: 'gift-management',
         loadChildren: () =>
           import('./gift/gift.module').then((m) => m.GiftModule),
       },
+      //Bài kiểm tra- thêm mới - lưu
       {
         path: 'sales-report-sku',
         loadChildren: () =>
@@ -90,8 +110,16 @@ const routes: Routes = [
             (m) => m.SaleReportBySkuModule
           ),
       },
+      //Cập nhật câu hỏi
       {
         path: 'promotion-management',
+        loadChildren: () =>
+          import('./promotion-management/promotion-management.module').then(
+            (m) => m.PromotionManagementModule
+          ),
+      },
+      {
+        path: 'promotion-management/:id',
         loadChildren: () =>
           import('./promotion-management/promotion-management.module').then(
             (m) => m.PromotionManagementModule

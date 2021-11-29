@@ -1,71 +1,31 @@
-<h2 mat-dialog-title>{{title}}</h2>
-<form class="example-form" [formGroup]="pgManagementForm" (submit)="createPg()">
-  <mat-dialog-content class="mat-typography">
-    <div class="row">
-      <div class="col-md-6 col-sm-12">
-        <mat-form-field class="example-full-width">
-          <input matInput placeholder="Sku(vi)" formControlName="name">
-          <mat-error *ngIf="pgManagementForm.controls['name'].hasError('required')">
-            Sku(vi) is required
-          </mat-error>
-        </mat-form-field>
-      </div>
-      <div class="col-md-6 col-sm-12">
-        <mat-form-field class="example-full-width">
-          <input matInput placeholder="Code" formControlName="code">
-          <mat-error *ngIf="pgManagementForm.controls['code'].hasError('required')">
-            Code is required
-          </mat-error>
-        </mat-form-field>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-6 col-sm-12">
-        <mat-form-field class="example-full-width">
-          <input matInput placeholder="Price" formControlName="price">
-          <mat-error *ngIf="pgManagementForm.controls['price'].hasError('pattern')">
-            Price is invalid
-          </mat-error>
-        </mat-form-field>
-      </div>
-      <div class="col-md-6 col-sm-12">
-        <mat-form-field class="example-full-width">
-          <input matInput placeholder="Size" formControlName="size">
-        </mat-form-field>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-12 col-sm-12">
-        <mat-form-field class="example-full-width">
-          <input matInput placeholder="Brand" formControlName="brand">
-        </mat-form-field>
-      </div>
-      <!-- <div class="col-md-6 col-sm-12">
-        <mat-form-field class="example-full-width">
-          <input matInput placeholder="Quantity/Carton" formControlName="quantity">
-          <mat-error *ngIf="pgManagementForm.controls['quantity'].hasError('pattern')">
-            Quantity is invalid
-          </mat-error>
-        </mat-form-field>
-      </div> -->
-    </div>
-    <div class="row">
-      <div class="col-md-12 col-sm-12">
-        <mat-form-field class="example-full-width">
-          <mat-select placeholder="Category" formControlName="pg_product_group">
-            <mat-option *ngFor="let category of categories" [value]="category.id">
-              {{ category.name }}
-            </mat-option>
-          </mat-select>
-          <mat-error *ngIf="pgManagementForm.controls['pg_product_group'].hasError('required')">
-            Category is required
-          </mat-error>
-        </mat-form-field>
-      </div>
-    </div>
-  </mat-dialog-content>
+<h2 mat-dialog-title>Thêm chương</h2>
+<form class="example-form" [formGroup]="formGroup" (submit)="create()">
+ 
+  <table class="example-full-width" cellspacing="0"><tr>
+    <mat-form-field class="example-full-width" appearance="fill">
+      <mat-label>Tên chủ đề</mat-label>
+   
+      <input matInput formControlName="ten">
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="example-full-width">
+      <mat-label>Môn học</mat-label>
+      <mat-select formControlName="monhoc">
+        <mat-option [value]="option._id" *ngFor="let option of monHocList$ | async">{{option.ten}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="example-full-width">
+      <mat-label>Khối</mat-label>
+      <mat-select formControlName="khoihoc">
+        <mat-option [value]="option._id" *ngFor="let option of khoiHocList$ | async">{{option.ten}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+  </tr></table>
+
   <mat-dialog-actions align="end">
-    <button mat-button mat-dialog-close>Cancel</button>
-    <button mat-button type="submit" cdkFocusInitial>{{buttonTitle}}</button>
+    <button mat-button mat-dialog-close>Bỏ qua</button>
+    <button mat-button type="submit" cdkFocusInitial>Lưu</button>
   </mat-dialog-actions>
-</form>
+  </form>

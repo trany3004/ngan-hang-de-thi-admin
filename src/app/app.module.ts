@@ -19,6 +19,7 @@ import { ErrorInterceptor } from './services/error.interceptor';
 import { ToastrModule } from 'ngx-toastr';
 
 
+
 export function getHighlightLanguages() {
   return [
     { name: 'typescript', func: typescript },

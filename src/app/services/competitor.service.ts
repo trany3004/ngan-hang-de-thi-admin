@@ -10,12 +10,13 @@ import { Competitor } from '../models/competitor.model';
 })
 
   
-  
 export class CompetitorService extends BaseService {
   
   constructor(private http: HttpClient) {
     super();
   }
+
+ 
 
   fetch(filter?: any): Observable<Competitor[]> {
     let query = '';

@@ -19,10 +19,15 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { CurrencyModule } from '../common/currency-pipe/currency.module';
 import { PromotionManagementComponent } from './promotion-management.component';
 import { PromotionCreateDialogComponent } from './promotion-create-dialog/promotion-create-dialog.component';
 import { MatSelectModule } from '@angular/material/select';
+import {DragDropModule} from '@angular/cdk/drag-drop';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import { MathModule } from 'src/app/math/math.module';
+
 @NgModule({
   declarations: [PromotionManagementComponent, PromotionCreateDialogComponent],
   imports: [
@@ -47,6 +52,10 @@ import { MatSelectModule } from '@angular/material/select';
     MatAutocompleteModule,
     CurrencyModule,
     CurrencyModule,
+    CKEditorModule,
+    MathModule.forRoot(),
+    MatCheckboxModule,
+    DragDropModule,
     RouterModule.forChild([
       {
         path: '',

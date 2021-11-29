@@ -35,7 +35,7 @@ export class MathServiceImpl implements MathService {
       if (math.latex) {
         element.innerText = math.latex;
       } else {
-        element.innerHTML = math.mathml;
+        element.innerHTML = math.mathml || math as string;
       }
     }
 

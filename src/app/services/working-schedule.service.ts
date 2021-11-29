@@ -18,6 +18,33 @@ export class WorkingSheduleService extends BaseService {
     super();
   }
 
+  
+  getCauHoi(): Observable<any[]> {
+    // CAll API get chu ded
+     return this.http.get<any[]>(`/api/v1/cau-hoi`);
+   }
+ 
+   getCauHoiById(id): Observable<any> {
+     // CAll API get chu ded
+      return this.http.get<any>(`/api/v1/cau-hoi?id=${id}`);
+    }
+ 
+   createCauHoi(data): Observable<any> {
+     return this.http.post<any>(`/api/v1/cau-hoi`, data);
+   }
+ 
+   updateCauHoi(id, data): Observable<any> {
+     return this.http.put<any>(`/api/v1/cau-hoi/${id}`, data);
+   }
+ 
+   xoaCauHoi(id): Observable<any> {
+    return this.http.delete<any>(`/api/v1/cau-hoi/${id}`);
+  }
+ 
+ 
+
+
+
   fetch(filter?: any): Observable<WorkingShedule[]> {
     let query = '';
     if (filter) {
@@ -64,4 +91,5 @@ export class WorkingSheduleService extends BaseService {
   delete(id: number): Observable<WorkingShedule[]> {
     return this.http.delete<WorkingShedule[]>(`/api/v2/working-sheets/${id}`);
   }
+
 }

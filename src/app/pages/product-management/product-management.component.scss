@@ -13,10 +13,8 @@ td.mat-footer-cell {
     margin-left: 10px;
 }
 
-a.product-quantiy {
-    color: #649450;
-    cursor: pointer;
-    &:hover {
-        text-decoration: underline;
+:host {
+    .map-icon {
+        transform: scale(1.5);
     }
-}
+  }

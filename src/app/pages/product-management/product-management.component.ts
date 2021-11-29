@@ -3,7 +3,7 @@ import {
   ChangeDetectorRef,
   Component, Inject, OnDestroy, OnInit, ViewChild,
 } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -17,6 +17,7 @@ import { ProductService } from 'src/app/services/product.service';
 import { CurrencyService } from '../common/currency-pipe/currency-pipe.service';
 import { ProductQuantityDialogComponent } from './product-quantity-detail/product-quantity-detail.component';
 import { ToastrService } from 'ngx-toastr';
+import { OutletService } from 'src/app/services/outlet.service';
 
 @Component({
   selector: 'app-product-management',
@@ -25,8 +26,9 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class ProductManagementComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(MatSort) sort: MatSort;
+  eventSubscription: Subscription;
   pageSizeOptions = [5, 10, 25, 100];
-  displayedColumns: string[] = ['code',  'category', 'brand', 'name',  'size','quantity', 'price', 'action'];
+  displayedColumns: string[] = ['stt', 'name', 'monhoc', 'khoihoc', 'action'];
   dataSource = new MatTableDataSource([]);
   totalCount = 0;
   filter: any = {
@@ -34,20 +36,44 @@ export class ProductManagementComponent implements OnInit, AfterViewInit, OnDest
     pageSize: this.pageSizeOptions[0],
     name_contains: null
   };
-
+  formGroup: FormGroup;
+  searchInfo: String = "";
+  searchTimeout;
   exporting = false;
   loading = false;
-  searchTimeout;
+  
   userSubscription: Subscription;
 
   ngAfterViewInit() {
     this.dataSource.sort = this.sort;
   }
+  ngOnInit() {
+    this.init();
+  }
+
+  //call API
+  init() {
+    this.loading = true;
+    //ham call API
+    this.eventSubscription = this.categoryService.getChuong()
+      .subscribe((data) => {
+        this.dataSource = new MatTableDataSource(data);
+        this.dataSource.sort = this.sort;
+        this.totalCount = data.length;
+        this.loading = false;
+      }, _ => this.loading = false);
+  }
+
+
+
+
+
 
 
 
   constructor(public dialog: MatDialog, private exportService: ExportService, private categoryService: CategoryService,
     private productService: ProductService, private currencyService: CurrencyService,
+    private outletService: OutletService,
     private toastr: ToastrService
   ) { }
   ngOnDestroy(): void {
@@ -56,19 +82,16 @@ export class ProductManagementComponent implements OnInit, AfterViewInit, OnDest
     }
   }
 
-  ngOnInit() {
-    this.init();
-  }
 
-  init() {
-    this.loading = true;
-    this.userSubscription = forkJoin([this.productService.fetch(this.filter), this.productService.getTotalRecords(this.filter)])
-      .subscribe(([data, total]) => {
-        this.mapData(data);
-        this.totalCount = total;
-        this.loading = false;
-      }, _ => this.loading = false);
-  }
+  // init() {
+  //   this.loading = true;
+  //   this.userSubscription = forkJoin([this.productService.fetch(this.filter), this.productService.getTotalRecords(this.filter)])
+  //     .subscribe(([data, total]) => {
+  //       this.mapData(data);
+  //       this.totalCount = total;
+  //       this.loading = false;
+  //     }, _ => this.loading = false);
+  // }
 
   mapData(products) {
     (products || []).forEach(element => {
@@ -81,8 +104,8 @@ export class ProductManagementComponent implements OnInit, AfterViewInit, OnDest
 
   createPg() {
     const dialogRef = this.dialog.open(ProductCreateDialogComponent, {
-      data: { type: 'create' },
-      width: '50%'
+      width: '50%',
+      data: { type: 'create' }
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -94,13 +117,15 @@ export class ProductManagementComponent implements OnInit, AfterViewInit, OnDest
     });
   }
 
-  update(product) {
+
+
+  modify(element) {
     const dialogRef = this.dialog.open(ProductCreateDialogComponent, {
+      width: '50%',
       data: {
         type: 'update',
-        data: product
-      },
-      width: '50%'
+        data: element
+      }
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -112,17 +137,17 @@ export class ProductManagementComponent implements OnInit, AfterViewInit, OnDest
     });
   }
 
-  deletePg(id) {
+  deleteObject(id) {
     const dialogRef = this.dialog.open(DeleteDialogComponent, {
       data: {
-        header: 'Delete Product',
-        title: 'Do you want to delete this product?'
+        header: 'Xóa chủ đề',
+        title: 'Bạn có muốn xóa chủ đề này không?'
       }
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.productService.delete(id).subscribe(res => {
+        this.productService.xoaChuong(id).subscribe(res => {
           this.filter.page = 0;
           this.filter.pageSize = this.pageSizeOptions[0];
           this.init();
@@ -130,7 +155,17 @@ export class ProductManagementComponent implements OnInit, AfterViewInit, OnDest
       }
     });
   }
+  onPageChange({ pageIndex, pageSize }) {
+    this.filter.page = pageIndex;
+    this.filter.pageSize = pageSize;
+    this.init();
+  }
 
+
+
+ 
+
+ 
   export() {
     this.exporting = true;
     const fileName = 'products';
@@ -169,11 +204,7 @@ export class ProductManagementComponent implements OnInit, AfterViewInit, OnDest
       })
   }
 
-  onPageChange({ pageIndex, pageSize }) {
-    this.filter.page = pageIndex;
-    this.filter.pageSize = pageSize;
-    this.init();
-  }
+
 
   changeSearch() {
     // console.log(this.filter)
@@ -207,4 +238,19 @@ export class ProductManagementComponent implements OnInit, AfterViewInit, OnDest
       }
     });
   }
+  search() {
+    this.loading = true
+    if (this.searchTimeout) clearTimeout(this.searchTimeout)
+     this.searchTimeout = setTimeout(() => {
+      if (this.eventSubscription) this.eventSubscription.unsubscribe()
+   
+       this.eventSubscription = this.outletService.getChuDeByCondition({ten: this.searchInfo}).subscribe((data) => {
+         this.dataSource = new MatTableDataSource(data);
+         this.dataSource.sort = this.sort;
+         this.totalCount = data.length;
+         this.loading = false;
+       }, _ => this.loading = false);
+    }, 200)
+ 
+   }
 }

@@ -17,6 +17,27 @@ export class CategoryService extends BaseService {
     super();
   }
 
+  getChuong(): Observable<any[]> {
+    // CAll API get chuong
+     return this.http.get<any[]>(`/api/v1/chuong-hoc`);
+   }
+ 
+   createChuong(data): Observable<any> {
+     return this.http.post<any>(`/api/v1/chuong-hoc`, data);
+   }
+ 
+    updateChuong(id, data): Observable<any> {
+      return this.http.put<any>(`/api/v1/chuong-hoc/${id}`, data);
+    }
+ 
+   xoaChuDe(id): Observable<any> {
+     return this.http.delete<any>(`/api/v1/chuong-hoc/${id}`);
+   }
+ 
+
+
+
+
   fetch(filter?: any): Observable<Category[]> {
     let query = '';
     if (filter) {

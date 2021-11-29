@@ -76,23 +76,23 @@ export class OutletCreateDialogComponent implements OnInit{
 
  
 
-  create() {
-    if (this.formGroup.valid) {
-      this.loading = true;
-      const value = {...this.formGroup.value};
-      if (this.data.type === 'create') {
-        this.outletService.createChuDe(value).subscribe(res => {
-          this.loading = false;
-          this.dialogRef.close(res);
-        }, _ => this.loading = false);
-      }
-      if (this.data.type === 'update') {
-        this.outletService.update(this.data.data._id, value).subscribe(res => {
-          this.loading = false;
-          this.dialogRef.close(res);
-        }, _ => this.loading = false);
-      }
-    }
-  }
+  // create() {
+  //   if (this.formGroup.valid) {
+  //     this.loading = true;
+  //     const value = {...this.formGroup.value};
+  //     if (this.data.type === 'create') {
+  //       this.outletService.createChuDe(value).subscribe(res => {
+  //         this.loading = false;
+  //         this.dialogRef.close(res);
+  //       }, _ => this.loading = false);
+  //     }
+  //     if (this.data.type === 'update') {
+  //       this.outletService.update(this.data.data._id, value).subscribe(res => {
+  //         this.loading = false;
+  //         this.dialogRef.close(res);
+  //       }, _ => this.loading = false);
+  //     }
+  //   }
+  // }
 
 }

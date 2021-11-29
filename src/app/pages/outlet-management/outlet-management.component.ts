@@ -13,6 +13,7 @@ import { forkJoin, Subscription } from 'rxjs';
 import { Cities, Regions } from 'src/app/constant/constant';
 import { CurrencyService } from '../common/currency-pipe/currency-pipe.service';
 import { AddressDialogComponent } from './checkin-address-dialog/checkin-address-dialog.component';
+import { FormGroup } from '@angular/forms';
 
 
 @Component({
@@ -22,9 +23,13 @@ import { AddressDialogComponent } from './checkin-address-dialog/checkin-address
 })
 export class OutletManagementComponent implements OnInit, AfterViewInit, OnDestroy{
   @ViewChild(MatSort) sort: MatSort;
-
+  chuDeList: any[] = [];
   eventSubscription: Subscription;
   totalCount = 0;
+  formGroup: FormGroup;
+  searchInfo: String = "";
+  searchTimeout;
+
 
   pageSizeOptions = [5, 10, 25, 100];
   displayedColumns: string[] = ['stt', 'name','chuong', 'monhoc', 'khoihoc', 'action'];
@@ -54,6 +59,7 @@ export class OutletManagementComponent implements OnInit, AfterViewInit, OnDestr
         this.totalCount = data.length;
         this.loading = false;
       }, _ => this.loading = false);
+      // this.search();
   }
 
   constructor(public dialog: MatDialog, private exportService: ExportService, private outletserive: OutletService,
@@ -133,6 +139,20 @@ export class OutletManagementComponent implements OnInit, AfterViewInit, OnDestr
     });
   }
   
+  search() {
+   this.loading = true
+   if (this.searchTimeout) clearTimeout(this.searchTimeout)
+    this.searchTimeout = setTimeout(() => {
+     if (this.eventSubscription) this.eventSubscription.unsubscribe()
+  
+      this.eventSubscription = this.outletserive.getChuDeByCondition({ten: this.searchInfo}).subscribe((data) => {
+        this.dataSource = new MatTableDataSource(data);
+        this.dataSource.sort = this.sort;
+        this.totalCount = data.length;
+        this.loading = false;
+      }, _ => this.loading = false);
+   }, 200)
 
+  }
  
 }

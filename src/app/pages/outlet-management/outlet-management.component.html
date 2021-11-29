@@ -6,7 +6,7 @@
     <div class="card-toolbar">
       <div class="example-tools justify-content-center">
         
-        <button mat-raised-button color="accent" class="ml-2" (click)="createPg()">
+        <button mat-raised-button color="accent" class="ml-2"  routerLink="/competitors">
           <span class="material-icons">add</span>Thêm mới
         </button>
       </div>
@@ -30,7 +30,7 @@
     <div class="row">
       <div class="col-md-6 col-sm-12">
         <mat-form-field class="example-full-width">
-          <input matInput placeholder="Tìm kiếm">
+          <input [(ngModel)]="searchInfo" (input)="search()" matInput placeholder="Tìm kiếm">
         </mat-form-field>
       </div>
     </div>
@@ -45,27 +45,32 @@
       </ng-container>
       <ng-container matColumnDef="chuong">
         <mat-header-cell *matHeaderCellDef mat-sort-header> Chương </mat-header-cell>
-        <mat-cell *matCellDef="let element"> {{ element.chuong.ten }}</mat-cell>
+        <mat-cell *matCellDef="let element"> {{ element.chuong?.ten }}</mat-cell>
       </ng-container>
       <ng-container matColumnDef="monhoc">
         <mat-header-cell *matHeaderCellDef mat-sort-header> Môn học </mat-header-cell>
-        <mat-cell *matCellDef="let element"> {{ element.monhoc.ten }}</mat-cell>
+        <mat-cell *matCellDef="let element"> {{ element.monhoc?.ten }}</mat-cell>
       </ng-container>
       <ng-container matColumnDef="khoihoc">
         <mat-header-cell *matHeaderCellDef mat-sort-header> Khối học </mat-header-cell>
-        <mat-cell *matCellDef="let element"> {{ element.khoihoc.ten }}</mat-cell>
+        <mat-cell *matCellDef="let element"> {{ element.khoihoc?.ten }}</mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="action">
         <mat-header-cell *matHeaderCellDef class="justify-content-end">Hành động</mat-header-cell>
         <mat-cell class="justify-content-end" *matCellDef="let element">
           <ng-container>
-            <button mat-icon-button color="primary" (click)="modify(element)">
+            <!-- <button mat-icon-button color="primary" (click)="modify(element)">
               <mat-icon aria-label="Example icon-button with a heart icon">create</mat-icon>
-            </button>
+            </button> -->
             <button mat-icon-button color="warn" (click)="deleteObject(element._id)">
               <mat-icon aria-label="Example icon-button with a heart icon">delete</mat-icon>
             </button>
+            <a class="menu-link" routerLink="/competitors/{{element._id}}" routerLinkActive="active">
+            <button mat-icon-button color="warn" >
+              <mat-icon>arrow_right_alt</mat-icon> 
+            </button>
+          </a>
           </ng-container>
         </mat-cell>
       </ng-container>

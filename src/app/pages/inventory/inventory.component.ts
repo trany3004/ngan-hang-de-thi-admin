@@ -1,30 +1,55 @@
 import {
   AfterViewInit,
-  Component, OnDestroy, OnInit, ViewChild,
-} from '@angular/core';
-import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
-import { ExportService } from 'src/app/services/export.service';
-import { forkJoin, of, Subscription } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
-import { OutletService } from 'src/app/services/outlet.service';
-import { InventoryService } from 'src/app/services/inventory.service';
-import { DatePipe } from '@angular/common';
-import { MatDialog } from '@angular/material/dialog';
-import { InventoryCreateDialogComponent } from './inventory-create-dialog/inventory-create-dialog.component';
-import { DeleteDialogComponent } from '../common/delete-dialog/delete-dialog.component';
+  Component,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from "@angular/core";
+
+import { MatSort } from "@angular/material/sort";
+import { MatTableDataSource } from "@angular/material/table";
+import { ExportService } from "src/app/services/export.service";
+import { combineLatest, forkJoin, Observable, of, Subscription } from "rxjs";
+import { delay, switchMap } from "rxjs/operators";
+import { OutletService } from "src/app/services/outlet.service";
+import { InventoryService } from "src/app/services/inventory.service";
+import { DatePipe } from "@angular/common";
+import { MatDialog } from "@angular/material/dialog";
+import { InventoryCreateDialogComponent } from "./inventory-create-dialog/inventory-create-dialog.component";
+import { KhoiHocService } from "src/app/services/khoihoc.service";
+import { ChuongService } from "src/app/services/chuong.service";
+import { MonHocService } from "src/app/services/monhoc.service";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { DeleteDialogComponent } from "../common/delete-dialog/delete-dialog.component";
+
+export interface CauhoiElement {
+  id: number;
+  noidung: string;
+}
 
 @Component({
-  selector: 'app-inventory',
-  templateUrl: './inventory.component.html',
-  styleUrls: ['./inventory.component.scss'],
+  selector: "app-inventory",
+  templateUrl: "./inventory.component.html",
+  styleUrls: ["./inventory.component.scss"],
 })
-export class InventoryComponent implements OnInit, AfterViewInit, OnDestroy {
-  displayedColumns: string[] = [ 'createdAt', 'outlet', 'product', 'before', 'after', 'action'];
+export class InventoryComponent {
+  formGroup: FormGroup;
+  monHocList$: Observable<any[]>;
+  khoiHocList$: Observable<any[]>;
+  chuongList$: Observable<any[]>;
+  outletList$: Observable<any[]>;
+  listCauHoi: any[] = [];
   hidePagination = false;
   pageSizeOptions = [5, 10, 25, 100];
   loadSubscription: Subscription;
   categories: any[] = [];
+  slCauHoi: number = 0;
+
+
+
+  displayedColumns: string[] = [  
+    "noidung"
+  ];
   // cities = [];
   // regions = [];
   filter: any = {
@@ -35,83 +60,144 @@ export class InventoryComponent implements OnInit, AfterViewInit, OnDestroy {
   loading = false;
 
   filterTimeout;
-  
+
   exporting = false;
   dataNormal: any[] = [];
   loadingSubscription: Subscription;
 
   dataSource = new MatTableDataSource([]);
-
+  ontap: any = null;
 
   @ViewChild(MatSort, { static: true }) sort: MatSort;
 
-
-  constructor(private exportService: ExportService,
-    private inventoryService: InventoryService, private outletService: OutletService,
+  constructor(
+    public dialog: MatDialog,
+    private outletService: OutletService,
+    private inventoryService: InventoryService,
     private datePipe: DatePipe,
-    public dialog: MatDialog) { }
-    ngOnDestroy(): void {
-      if (this.loadSubscription) {
-        this.loadSubscription.unsubscribe();
-      }
-    }
-      
-    ngAfterViewInit() {
-      this.dataSource.sort = this.sort;
-    }
-    ngOnInit(): void {
-      this.init();
-    }
-   
-  init() {
-    this.loading = true;
-    if (this.loadSubscription) {
-      this.loadSubscription.unsubscribe();
-    }
-    this.loadSubscription = forkJoin([
-      this.inventoryService.fetch(this.filter),
-      this.inventoryService.getTotalRecords(this.filter)
-    ]).subscribe(([checkins, total]) => {
-      this.mapData(checkins);
-      this.totalCount = total;
-      this.loading = false;
-    }, _ => {
-      this.loading = false;
-    })
+    private fb: FormBuilder,
+    private monHocService: MonHocService,
+    private chuongHocService: ChuongService,
+    private khoiService: KhoiHocService // private router: ActivatedRoute
+  ) {
+    this.formGroup = this.fb.group({
+      monhoc: [null],
+      cauhoi: [""],
+      chuong: [null],
+      khoihoc: [null],
+      chude: [null],
+      loai: [null, []],
+      mucDo: [null],
+    });
   }
 
+  displayMucDo(mucDo) {
+    if (mucDo == 1) return "Dễ";
+    if (mucDo == 2) return "Trung bình";
+    if (mucDo == 3) return "Khó";
+  }
 
-   export() {
-    this.exporting = true;
-    const fileName = 'inventory-reports';
-    const header: any = {
-      createdAt: 'Date',
-      outlet: 'OutletName',
-      product: 'ProductName',
-      before: 'Quantity In Stock',
-      after: 'Final Inventory'
-    }
-    let data = [header];
-    if (this.hidePagination) {
-      data = data.concat(this.dataNormal);
-      this.exportService.exportExcel(data, fileName, true, [fileName]);
-      this.exporting = false;
-      return;
-    } else {
-      this.exporting = true;
-      let newFilter = {...this.filter};
-      delete newFilter.page;
-      delete newFilter.pageSize;
-      this.inventoryService.fetch(newFilter)
-        .subscribe((rs) => {
-        let dataExport = this.mappingDataForExport(rs);
-        data = data.concat(dataExport);
-        this.exportService.exportExcel(data, fileName, true, [fileName]);
-        this.exporting = false;
-      }, _ => {
-        this.exporting = false;
-      })
-    }
+  displayLoai(e) {
+    if (e.isDrapDrop) return "Kéo thả đáp án";
+    if (e.multipleAnswer) return "Nhiều đáp án đúng";
+    if (!e.multipleAnswer) return "Một đáp án đúng";
+  }
+  ngOnInit() {
+    this.init();
+    this.getData();
+    combineLatest(
+      this.formGroup.get("monhoc").valueChanges.pipe(delay(200)),
+      this.formGroup.get("khoihoc").valueChanges.pipe(delay(200)),
+      this.formGroup.get("chuong").valueChanges.pipe(delay(200))
+    ).subscribe(() => {
+      if (!this.disableChuDe()) {
+        this.outletList$ = this.outletService.getChuDeByCondition({
+          mon: this.formGroup.get("monhoc").value,
+          khoi: this.formGroup.get("khoihoc").value,
+          chuong: this.formGroup.get("chuong").value,
+        });
+      }
+      if (!this.disableChuong()) {
+        this.chuongList$ = this.chuongHocService.get({
+          monhoc: this.formGroup.get("monhoc").value,
+          khoihoc: this.formGroup.get("khoihoc").value,
+        });
+      }
+    });
+    combineLatest(
+      this.formGroup.get("monhoc").valueChanges.pipe(delay(200)),
+      this.formGroup.get("khoihoc").valueChanges.pipe(delay(200))
+    ).subscribe(() => {
+      if (!this.disableChuong()) {
+        this.chuongList$ = this.chuongHocService.get({
+          monhoc: this.formGroup.get("monhoc").value,
+          khoihoc: this.formGroup.get("khoihoc").value,
+        });
+      }
+    });
+  }
+
+  init() {
+    this.monHocList$ = this.monHocService.get();
+    this.chuongList$ = this.chuongHocService.get();
+    this.khoiHocList$ = this.khoiService.get();
+  }
+
+  disableChuong() {
+    return (
+      !this.formGroup.get("monhoc").value ||
+      !this.formGroup.get("khoihoc").value
+    );
+  }
+  disableChuDe() {
+    return (
+      !this.formGroup.get("monhoc").value ||
+      !this.formGroup.get("khoihoc").value ||
+      !this.formGroup.get("chuong").value
+    );
+  }
+
+  getData() {
+    this.loading = true;
+    const value = { ...this.formGroup.value };
+    const query = {
+      mucDo: +value.mucDo,
+      chude: value.chude,
+    };
+
+    this.inventoryService.fetch(query).subscribe((rs) => {
+      this.ontap = rs;
+      this.loading = false;
+    }, () => this.loading = false);
+  }
+
+  taoCauHoi() {
+    this.loading = true;
+    const data = {
+      chude: this.formGroup.value.chude,
+      mucDoList: [
+        { mucDo: +this.formGroup.value.mucDo, soLuong: this.slCauHoi },
+      ],
+    };
+    this.inventoryService.taoCauHoiTuDong(data).subscribe((rs) => {
+      console.log("SSSSSSSSSSS >>>", rs);
+      this.listCauHoi = rs[0];
+      this.loading = false;
+    }, () => this.loading = false);
+  }
+
+  ngAfterViewInit() {
+    this.dataSource.sort = this.sort;
+  }
+
+  // ngOnDestroy(): void {
+  //   if (this.eventSubscription) {
+  //     this.eventSubscription.unsubscribe();
+  //   }
+  // }
+
+  applyFilter() {
+    this.getData();
   }
 
   onPageChange(event) {
@@ -119,118 +205,6 @@ export class InventoryComponent implements OnInit, AfterViewInit, OnDestroy {
     this.filter.pageSize = event.pageSize;
     this.init();
   }
-
-  mappingDataAndDontSet(list) {
-    const data: any = list.map((element) => {
-      const mapped = {
-        ...element,
-        createdAt: this.datePipe.transform(element.createdAt, 'dd/MM/yyyy'),
-        outlet: element['pg_outlet'] ? element['pg_outlet'].name : '',
-        product: element['pg_product'] ? element['pg_product'].name : '',
-      }
-      return mapped
-    })
-    return data;
-  }
-
-  mappingDataForExport(list) {
-    const data: any = list.map((element) => {
-      const mapped = {
-        createdAt: this.datePipe.transform(element.createdAt, 'dd/MM/yyyy'),
-        outlet: element['pg_outlet'] ? element['pg_outlet'].name : '',
-        product: element['pg_product'] ? element['pg_product'].name : '',
-        after: element.after,
-        before: element.before
-      }
-      return mapped
-    })
-    return data;
-  }
-
-
-
-  mapData(list = []) {
-    const data: any = this.mappingDataAndDontSet(list);
-    this.dataNormal = this.mappingDataForExport(list);
-    this.dataSource = new MatTableDataSource(data);
-    this.dataSource.sort = this.sort;
-  }
-
-  onFilterData({region, city, name, startDate, endDate}) {
-    // if (this.filterTimeout) {
-    //   clearTimeout(this.filterTimeout);
-    // }
-    // if (region || city || name) {
-    //   this.hidePagination = true;
-    //   let newFilter = {
-    //     group: region, city, name
-    //   }
-    //   this.filterTimeout = setTimeout(() => {
-    //     this.loading = true;
-    //     this.outletService.fetchoutlets(newFilter).pipe(switchMap((rs) => {
-    //       let list = [];
-    //       (rs || []).map(({pg_inventories}) => {
-    //         list = list.concat(pg_inventories);
-    //       })
-    //       return of(list);
-    //     })).pipe(switchMap((rs) => {
-    //       let ids = rs.filter(({id}) => id).map(({id}) => id);
-    //       const filterDate = {
-    //         createdAt_gte: startDate || null,
-    //         createdAt_lt: endDate || null
-    //       }
-    //       return this.inventoryService.fetchByIds(ids, filterDate)
-    //     })).subscribe((rs) => {
-    //       this.mapData(rs);
-    //       this.loading = false;
-    //     })
-    //   }, 100)
-    // } else {
-    //   this.hidePagination = false;
-    //   this.loading = true;
-    //   this.filter.page = 0;
-    //   this.filterTimeout = setTimeout(() => {
-    //       this.filter.createdAt_gte = startDate || null;
-    //       this.filter.createdAt_lt = endDate || null;
-    //       this.filter.page = 0;
-    //       this.filter.pageSize = this.pageSizeOptions[0];
-    //       this.init();
-    //   }, 100)
-    // }
-  }
-
-  modifyInventory(element) {
-    const dialogRef = this.dialog.open(InventoryCreateDialogComponent, {
-      width: '50%',
-      data: element
-    });
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.init();
-      }
-    });
-  }
-
-
-  deleteItem({id}) {
-    const dialogRef = this.dialog.open(DeleteDialogComponent, {
-      data: {
-        header: 'Delete Inventory',
-        title: 'Do you want to delete this inventory?'
-      }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.inventoryService.delete(id).subscribe(res => {
-          this.filter.page = 0;
-          this.filter.pageSize = this.pageSizeOptions[0];
-          this.init();
-        });
-      }
-    });
-  }
-
 }
 
 

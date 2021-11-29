@@ -1,0 +1,14 @@
+.danhmuc {
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+}
+.dm{ 
+    margin-right: 5px;
+}
+
+::ng-deep {
+    mat-checkbox: {
+        padding-right: 16px;
+    }
+}

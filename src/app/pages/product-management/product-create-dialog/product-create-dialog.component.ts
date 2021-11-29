@@ -1,83 +1,91 @@
+import { MonHocService } from './../../../services/monhoc.service';
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CategoryService } from 'src/app/services/category.service';
 import { ProductService } from 'src/app/services/product.service';
+import { KhoiHocService } from 'src/app/services/khoihoc.service';
+import { ChuongService } from 'src/app/services/chuong.service';
+import { Observable } from 'rxjs';
 @Component({
   selector: 'app-product-create-dialog',
   templateUrl: './product-create-dialog.component.html',
   styleUrls: ['./product-create-dialog.component.scss'],
 })
 export class ProductCreateDialogComponent implements OnInit {
-  pgManagementForm: FormGroup;
-  title = '';
-  buttonTitle = '';
-  loading = false;
-  categories: any[] = [];
-  isClosed = false;
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private fb: FormBuilder,
-  private categoryService: CategoryService,
-  private productService: ProductService,
-  public dialogRef: MatDialogRef<ProductCreateDialogComponent>) {
-    this.title = data.type === 'create' ? 'Create Product' : 'Update Product';
-    this.buttonTitle = data.type === 'create' ? 'Create' : 'Update';
-    // this.title = data.title;
-    this.pgManagementForm = this.fb.group({
-      name: [null, Validators.required],
-      code: [null, Validators.required],
-      brand: [null, []],
-      price: [null, [Validators.pattern('\\d*')]],
-      // quantity: [null, [Validators.pattern('\\d*')]],
-      size: [null, []],
-      pg_product_group: [null, Validators.required]
+  formGroup: FormGroup;
+  groups: any[] = [];
+  title: string = '';
+  monHocList$: Observable<any[]>;
+  khoiHocList$: Observable<any[]>;
 
-    });
+
+  
+
+  loading = false;
+
+  constructor(
+    public dialogRef: MatDialogRef<ProductCreateDialogComponent>,
+    private fb: FormBuilder,
+    private productService: ProductService,
+    private monHocService: MonHocService,
+    private khoiService: KhoiHocService,
+    
+    @Inject(MAT_DIALOG_DATA) public data: any) {
+      this.formGroup = this.fb.group({
+        ten: [null, Validators.required],
+        monhoc: [null, Validators.required],
+        khoihoc: [null, Validators.required]
+      });
+    
   }
-  ngOnInit(): void {
-    this.fetchCategories();
+
+
+  init() { 
+    this.monHocList$ = this.monHocService.get();
+    this.khoiHocList$ = this.khoiService.get();
+    
     if (this.data.type === 'update') {
-      const {name, code, brand, price, size, categoryId} = this.data.data;
-      this.pgManagementForm.controls.name.setValue(name);
-      this.pgManagementForm.controls.code.setValue(code);
-      this.pgManagementForm.controls.brand.setValue(brand);
-      this.pgManagementForm.controls.price.setValue(price);
-      // this.pgManagementForm.controls.quantity.setValue(quantity);
-      this.pgManagementForm.controls.size.setValue(size);
-      this.pgManagementForm.controls['pg_product_group'].setValue(categoryId);
+      this.loading = true;
+      const dataUpdated = this.data.data;
+        if (dataUpdated) {
+          this.formGroup.controls['ten'].setValue(dataUpdated.ten);
+          this.formGroup.controls['monhoc'].setValue(dataUpdated.monhoc._id);
+          this.formGroup.controls['khoihoc'].setValue(dataUpdated.khoihoc._id);
+         
+         
+        }
+        this.loading = false;
+      // }, _ => this.loading = false);
     }
   }
+  
+  ngOnInit(): void {
+   
+    this.title = this.data.type === 'update' ? 'Cập nhật chương' : 'Tạo chương';
+    this.init();
+ 
+  }
 
-  createPg() {
-    if (this.pgManagementForm.valid) {
+ 
+
+  create() {
+    if (this.formGroup.valid) {
       this.loading = true;
+      const value = {...this.formGroup.value};
       if (this.data.type === 'create') {
-
-        this.productService.create(this.pgManagementForm.value).subscribe(res => {
+        this.productService.createChuong(value).subscribe(res => {
           this.loading = false;
-          this.isClosed = true;
           this.dialogRef.close(res);
-        });
+        }, _ => this.loading = false);
       }
       if (this.data.type === 'update') {
-        this.productService.update(this.data.data.id, this.pgManagementForm.value).subscribe(res => {
+        this.productService.updateChuong(this.data.data._id, value).subscribe(res => {
           this.loading = false;
-          this.isClosed = true;
           this.dialogRef.close(res);
-        });
+        }, _ => this.loading = false);
       }
-    } else {
-      this.isClosed = false;
-      this.pgManagementForm.controls.name.markAllAsTouched();
-      this.pgManagementForm.controls.code.markAllAsTouched();
-      this.pgManagementForm.controls.pg_product_group.markAllAsTouched();
     }
   }
 
-  fetchCategories() {
-    this.loading = true
-    this.categoryService.fetch().subscribe((rs) => {
-      this.categories = rs;
-      this.loading = false
-    }, _ => this.loading = false);
-  }
 }
