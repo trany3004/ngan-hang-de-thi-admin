@@ -21,6 +21,7 @@ import { ChuongService } from "src/app/services/chuong.service";
 import { MonHocService } from "src/app/services/monhoc.service";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { DeleteDialogComponent } from "../common/delete-dialog/delete-dialog.component";
+import { CdkDragDrop, moveItemInArray } from "@angular/cdk/drag-drop";
 
 export interface CauhoiElement {
   id: number;
@@ -38,18 +39,18 @@ export class InventoryComponent {
   khoiHocList$: Observable<any[]>;
   chuongList$: Observable<any[]>;
   outletList$: Observable<any[]>;
-  listCauHoi: any[] = [];
+  listCauHoi: any = {
+    de: [],
+    trungBinh: [],
+    kho: [],
+  };
   hidePagination = false;
   pageSizeOptions = [5, 10, 25, 100];
   loadSubscription: Subscription;
   categories: any[] = [];
   slCauHoi: number = 0;
 
-
-
-  displayedColumns: string[] = [  
-    "noidung"
-  ];
+  displayedColumns: string[] = ["noidung"];
   // cities = [];
   // regions = [];
   filter: any = {
@@ -88,6 +89,7 @@ export class InventoryComponent {
       chude: [null],
       loai: [null, []],
       mucDo: [null],
+      time: 0
     });
   }
 
@@ -104,7 +106,6 @@ export class InventoryComponent {
   }
   ngOnInit() {
     this.init();
-    this.getData();
     combineLatest(
       this.formGroup.get("monhoc").valueChanges.pipe(delay(200)),
       this.formGroup.get("khoihoc").valueChanges.pipe(delay(200)),
@@ -160,30 +161,37 @@ export class InventoryComponent {
   getData() {
     this.loading = true;
     const value = { ...this.formGroup.value };
-    const query = {
-      mucDo: +value.mucDo,
-      chude: value.chude,
+    const query: any = {
+     
     };
+    if (value.chude) {
+      query.chude = value.chude
+    }
 
-    this.inventoryService.fetch(query).subscribe((rs) => {
-      this.ontap = rs;
-      this.loading = false;
-    }, () => this.loading = false);
+    this.inventoryService.fetch(query).subscribe(
+      (rs) => {
+        this.ontap = rs;
+        this.formGroup.controls.time.setValue(rs?.time ? rs.time/60000 : 0);
+        this.loading = false;
+      },
+      () => (this.loading = false)
+    );
   }
 
-  taoCauHoi() {
+  taoCauHoi(mucDo, slCauHoi) {
     this.loading = true;
     const data = {
       chude: this.formGroup.value.chude,
-      mucDoList: [
-        { mucDo: +this.formGroup.value.mucDo, soLuong: this.slCauHoi },
-      ],
+      mucDoList: [{ mucDo: +mucDo, soLuong: +slCauHoi }],
     };
-    this.inventoryService.taoCauHoiTuDong(data).subscribe((rs) => {
-      console.log("SSSSSSSSSSS >>>", rs);
-      this.listCauHoi = rs[0];
-      this.loading = false;
-    }, () => this.loading = false);
+    this.inventoryService.taoCauHoiTuDong(data).subscribe(
+      (rs) => {
+        const property = mucDo == 1 ? "de" : mucDo == 2 ? "trungBinh" : "kho";
+        this.listCauHoi[property] = rs[0];
+        this.loading = false;
+      },
+      () => (this.loading = false)
+    );
   }
 
   ngAfterViewInit() {
@@ -205,6 +213,39 @@ export class InventoryComponent {
     this.filter.pageSize = event.pageSize;
     this.init();
   }
+
+  getListCauHoi(cauhoi) {
+    let rs = [];
+    Object.keys(cauhoi).forEach((mucDo) => {
+      rs = rs.concat(cauhoi[mucDo].map((c) => c._id))
+    })
+    return rs;
+
+  }
+
+  drop(event: CdkDragDrop<string[]>, element: any) {
+    moveItemInArray(
+      element.dapAn,
+      event.previousIndex,
+      event.currentIndex
+    );
+  }
+
+  changeDapAn(index, element) {
+    element.dapAn.forEach((e) => (e.selected = false));
+    element.dapAn[index].selected = true;
+  }
+  
+  taoOnTap() {
+    this.loading = true;
+    const payload = {
+      chude: this.formGroup.value.chude,
+      time: Number(this.formGroup.value.time),
+      cauhoi: this.getListCauHoi(this.listCauHoi)
+    }
+    return this.inventoryService.taoOnTap(payload).subscribe(() => {
+      this.getData();
+    }, _ => this.loading = false);
+
+  }
 }
-
-

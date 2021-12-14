@@ -29,6 +29,10 @@ export class InventoryService extends BaseService {
     return this.http.post<any>(`/api/v1/on-tap/random`, data);
   }
 
+  taoOnTap(data): Observable<any> {
+    return this.http.post<any>(`/api/v1/on-tap`, data);
+  }
+
   fetchByIds(ids=[], filter): Observable<Inventory[]> {
     if (!ids || !ids.length) {
       return of([]);

@@ -18,6 +18,7 @@ import { MatTabsModule } from "@angular/material/tabs";
 import { MathModule } from "src/app/math/math.module";
 import { MatRadioModule } from "@angular/material/radio";
 import { MatCheckboxModule } from "@angular/material/checkbox";
+import { DragDropModule } from "@angular/cdk/drag-drop";
 
 @NgModule({
   declarations: [InventoryComponent, InventoryCreateDialogComponent],
@@ -39,6 +40,7 @@ import { MatCheckboxModule } from "@angular/material/checkbox";
     MathModule.forRoot(),
     MatRadioModule,
     MatCheckboxModule,
+    DragDropModule,
     RouterModule.forChild([
       {
         path: "",

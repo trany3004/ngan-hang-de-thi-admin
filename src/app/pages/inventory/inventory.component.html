@@ -73,14 +73,14 @@
       </div>
 
       <div class="dm">
-        <mat-form-field appearance="fill">
+        <!-- <mat-form-field appearance="fill">
           <mat-label>Mức độ</mat-label>
           <mat-select formControlName="mucDo">
             <mat-option value="1">Dễ</mat-option>
             <mat-option value="2">Trung bình</mat-option>
             <mat-option value="3">Khó</mat-option>
           </mat-select>
-        </mat-form-field>
+        </mat-form-field> -->
       </div>
       <div class="d-flex" style="margin-left: auto">
         <button
@@ -96,13 +96,19 @@
         </button>
       </div>
     </div>
+    <div>
+      <mat-form-field appearance="fill">
+        <mat-label>Thời gian làm bài (phút)</mat-label>
+        <input matInput type="number" formControlName="time">
+      </mat-form-field>
+    </div>
 
     <div *ngIf="!ontap">
       <div
-        *ngIf="!formGroup.value.chude || !formGroup.value.mucDo; else taoOnTap"
+        *ngIf="!formGroup.value.chude; else taoOnTap"
         class="d-flex justify-content-center"
       >
-        Vui lòng chọn chủ đề và mức độ
+        Vui lòng chọn chủ đề
       </div>
       <ng-template #taoOnTap>
         <div class="d-flex justify-content-center">
@@ -110,50 +116,334 @@
         </div>
         <div>
           <mat-tab-group mat-align-tabs="center">
-            <mat-tab label="Tạo tự động"> 
-              <div class="d-flex justify-content-center">
-                <mat-form-field class="example-full-width">
-                  <input type="number" matInput placeholder="Số lượng câu hỏi" [(ngModel)]="slCauHoi" [ngModelOptions]="{standalone: true}">
-                </mat-form-field>
-                <button mat-button  color="accent" (click) = "taoCauHoi()">
-                  Tạo
-                </button>
+            <mat-tab label="Dễ">
+              <div>
+                <mat-tab-group mat-align-tabs="center">
+                  <mat-tab label="Tạo tự động">
+                    <div class="d-flex justify-content-center">
+                      <mat-form-field class="example-full-width">
+                        <input
+                          type="number"
+                          matInput
+                          placeholder="Số lượng câu hỏi"
+                          #sl
+                        />
+                      </mat-form-field>
+                      <button
+                        mat-button
+                        color="accent"
+                        (click)="taoCauHoi(1, sl.value)"
+                        [disabled]="!sl.value"
+                      >
+                        Tạo
+                      </button>
+                    </div>
+                  </mat-tab>
+                  <mat-tab label="Tự chọn câu hỏi"> Tự chọn câu hỏi </mat-tab>
+                </mat-tab-group>
+              </div>
+              <div>
+                <div *ngFor="let element of listCauHoi.de; let i = index">
+                  <p>Câu {{ i + 1 }}:</p>
+                  <div [(appMath)]="element.cauhoi"></div>
+                  <div
+                    style="width: 100%"
+                    class="d-flex flex-wrap"
+                    *ngIf="!element.isDrapDrop"
+                  >
+                    <div
+                      *ngFor="let dapAn of element.dapAn; let y = index"
+                      style="width: 50%"
+                      class="d-flex"
+                    >
+                      <div *ngIf="!element.multipleAnswer">
+                        <mat-radio-button
+                          (change)="changeDapAn(y, element)"
+                          class="rdo"
+                        ></mat-radio-button>
+                      </div>
+                      <div
+                        *ngIf="element.multipleAnswer"
+                        style="padding-right: 16px"
+                      >
+                        <mat-checkbox></mat-checkbox>
+                      </div>
+
+                      <div [appMath]="dapAn" class="dap-an"></div>
+                    </div>
+                  </div>
+                  <div
+                    style="width: 100%"
+                    class="d-flex flex-wrap"
+                    *ngIf="element.isDrapDrop"
+                    cdkDropList
+                    class="example-list"
+                    (cdkDropListDropped)="drop($event, element)"
+                  >
+                    <ng-container
+                      class="row"
+                      *ngFor="let dapAn of element.dapAn; let i = index"
+                    >
+                      <div
+                        class="col-md-12"
+                        cdkDrag
+                        style="
+                          border: 1px solid #ccc;
+                          border-radius: 5px;
+                          height: 50px;
+                        "
+                      >
+                        <div [appMath]="dapAn" class="dap-an"></div>
+                      </div>
+                    </ng-container>
+                  </div>
+                </div>
               </div>
             </mat-tab>
-            <mat-tab label="Tự chọn câu hỏi"> Tự chọn câu hỏi </mat-tab>
-          </mat-tab-group>
-        </div>
-        <div>
-          <div *ngFor="let element of listCauHoi; let i = index">
-            <p>Câu {{i+1}}:</p>
-            <div [(appMath)]="element.cauhoi"></div>
-            <div style="width: 100%" class="d-flex flex-wrap">
-             <div *ngFor="let dapAn of element.dapAn; let y = index" style="width: 50%" class="d-flex">
-                <div *ngIf="!element.multipleAnswer">
-                  <mat-radio-button
-                  class="rdo"
-                  ></mat-radio-button
-                >
-                </div>
-                <div *ngIf="element.multipleAnswer" style="padding-right: 16px;">
-                  <mat-checkbox ></mat-checkbox>
-                </div>
+            <mat-tab label="Trung bình">
+              <div>
+                <mat-tab-group mat-align-tabs="center">
+                  <mat-tab label="Tạo tự động">
+                    <div class="d-flex justify-content-center">
+                      <mat-form-field class="example-full-width">
+                        <input
+                          type="number"
+                          matInput
+                          placeholder="Số lượng câu hỏi"
+                          #sl
+                        />
+                      </mat-form-field>
+                      <button
+                        mat-button
+                        color="accent"
+                        (click)="taoCauHoi(2, sl.value)"
+                        [disabled]="!sl.value"
+                      >
+                        Tạo
+                      </button>
+                    </div>
+                  </mat-tab>
+                  <mat-tab label="Tự chọn câu hỏi"> Tự chọn câu hỏi </mat-tab>
+                </mat-tab-group>
+              </div>
+              <div>
                 <div
-                 [(appMath)]="element.dapAn[y]"></div>
-            </div>
-            </div>
-          </div>
+                  *ngFor="let element of listCauHoi.trungBinh; let i = index"
+                >
+                  <p>Câu {{ i + 1 }}:</p>
+                  <div [(appMath)]="element.cauhoi"></div>
+                  <div
+                    style="width: 100%"
+                    class="d-flex flex-wrap"
+                    *ngIf="!element.isDrapDrop"
+                  >
+                    <div
+                      *ngFor="let dapAn of element.dapAn; let y = index"
+                      style="width: 50%"
+                      class="d-flex"
+                    >
+                      <div *ngIf="!element.multipleAnswer">
+                        <mat-radio-button
+                          (change)="changeDapAn(y, element)"
+                          class="rdo"
+                        ></mat-radio-button>
+                      </div>
+                      <div
+                        *ngIf="element.multipleAnswer"
+                        style="padding-right: 16px"
+                      >
+                        <mat-checkbox></mat-checkbox>
+                      </div>
+
+                      <div [appMath]="dapAn" class="dap-an"></div>
+                    </div>
+                  </div>
+                  <div
+                    style="width: 100%"
+                    class="d-flex flex-wrap"
+                    *ngIf="element.isDrapDrop"
+                    cdkDropList
+                    class="example-list"
+                    (cdkDropListDropped)="drop($event, element)"
+                  >
+                    <ng-container
+                      class="row"
+                      *ngFor="let dapAn of element.dapAn; let i = index"
+                    >
+                      <div
+                        class="col-md-12"
+                        cdkDrag
+                        style="
+                          border: 1px solid #ccc;
+                          border-radius: 5px;
+                          height: 50px;
+                        "
+                      >
+                        <div [appMath]="dapAn" class="dap-an"></div>
+                      </div>
+                    </ng-container>
+                  </div>
+                </div>
+              </div>
+            </mat-tab>
+            <mat-tab label="Khó">
+              <div>
+                <mat-tab-group mat-align-tabs="center">
+                  <mat-tab label="Tạo tự động">
+                    <div class="d-flex justify-content-center">
+                      <mat-form-field class="example-full-width">
+                        <input
+                          type="number"
+                          matInput
+                          placeholder="Số lượng câu hỏi"
+                          #sl
+                        />
+                      </mat-form-field>
+                      <button
+                        mat-button
+                        color="accent"
+                        (click)="taoCauHoi(3, sl.value)"
+                        [disabled]="!sl.value"
+                      >
+                        Tạo
+                      </button>
+                    </div>
+                  </mat-tab>
+                  <mat-tab label="Tự chọn câu hỏi"> Tự chọn câu hỏi </mat-tab>
+                </mat-tab-group>
+              </div>
+              <div>
+                <div *ngFor="let element of listCauHoi.kho; let i = index">
+                  <p>Câu {{ i + 1 }}:</p>
+                  <div [(appMath)]="element.cauhoi"></div>
+                  <div
+                    style="width: 100%"
+                    class="d-flex flex-wrap"
+                    *ngIf="!element.isDrapDrop"
+                  >
+                    <div
+                      *ngFor="let dapAn of element.dapAn; let y = index"
+                      style="width: 50%"
+                      class="d-flex"
+                    >
+                      <div *ngIf="!element.multipleAnswer">
+                        <mat-radio-button
+                          (change)="changeDapAn(y, element)"
+                          class="rdo"
+                        ></mat-radio-button>
+                      </div>
+                      <div
+                        *ngIf="element.multipleAnswer"
+                        style="padding-right: 16px"
+                      >
+                        <mat-checkbox></mat-checkbox>
+                      </div>
+
+                      <div [appMath]="dapAn" class="dap-an"></div>
+                    </div>
+                  </div>
+                  <div
+                    style="width: 100%"
+                    class="d-flex flex-wrap"
+                    *ngIf="element.isDrapDrop"
+                    cdkDropList
+                    class="example-list"
+                    (cdkDropListDropped)="drop($event, element)"
+                  >
+                    <ng-container
+                      class="row"
+                      *ngFor="let dapAn of element.dapAn; let i = index"
+                    >
+                      <div
+                        class="col-md-12"
+                        cdkDrag
+                        style="
+                          border: 1px solid #ccc;
+                          border-radius: 5px;
+                          height: 50px;
+                        "
+                      >
+                        <div [appMath]="dapAn" class="dap-an"></div>
+                      </div>
+                    </ng-container>
+                  </div>
+                </div>
+              </div>
+            </mat-tab>
+          </mat-tab-group>
         </div>
       </ng-template>
     </div>
-    <div>
-      <ng-container matColumnDef="noidung">
-        <mat-header-cell *matHeaderCellDef mat-sort-header> Nội dung câu hỏi </mat-header-cell>
-        <mat-cell *matCellDef="let element"> 
-          <div [(appMath)]="element.cauhoi"></div>
-        </mat-cell>
-      </ng-container>
-    </div>
 
+    <div
+      *ngIf="
+        listCauHoi &&
+        (listCauHoi.de?.length ||
+          listCauHoi.trungBinh?.length ||
+          listCauHoi.kho?.length)
+      "
+      class="d-flex justify-content-center"
+    >
+      <button
+        mat-raised-button
+        class="mb-5"
+        color="primary"
+        (click)="taoOnTap()"
+      >
+        <span>Tạo đề ôn tập</span>
+      </button>
+    </div>
+    <div *ngIf="ontap && ontap.cauhoi?.length">
+      <div>
+        <div *ngFor="let element of ontap.cauhoi; let i = index">
+          <p>Câu {{ i + 1 }}:</p>
+          <div [(appMath)]="element.cauhoi"></div>
+          <div
+            style="width: 100%"
+            class="d-flex flex-wrap"
+            *ngIf="!element.isDrapDrop"
+          >
+            <div
+              *ngFor="let dapAn of element.dapAn; let y = index"
+              style="width: 50%"
+              class="d-flex"
+            >
+              <div *ngIf="!element.multipleAnswer">
+                <mat-radio-button
+                  (change)="changeDapAn(y, element)"
+                  class="rdo"
+                ></mat-radio-button>
+              </div>
+              <div *ngIf="element.multipleAnswer" style="padding-right: 16px">
+                <mat-checkbox></mat-checkbox>
+              </div>
+
+              <div [appMath]="dapAn" class="dap-an"></div>
+            </div>
+          </div>
+          <div
+            style="width: 100%"
+            class="d-flex flex-wrap"
+            *ngIf="element.isDrapDrop"
+            cdkDropList
+            class="example-list"
+            (cdkDropListDropped)="drop($event, element)"
+          >
+            <ng-container
+              class="row"
+              *ngFor="let dapAn of element.dapAn; let i = index"
+            >
+              <div
+                class="col-md-12"
+                cdkDrag
+                style="border: 1px solid #ccc; border-radius: 5px; height: 50px"
+              >
+                <div [appMath]="dapAn" class="dap-an"></div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
