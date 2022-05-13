@@ -25,12 +25,12 @@ const routes: Routes = [
       },
       // ôn tập
       {
-        path: 'competitors',
+        path: 'on-tap-ly-thuyet',
         loadChildren: () =>
           import('./competitors/competitors.module').then((m) => m.CompetitorsModule),
       },
       {
-        path: 'competitors/:id',
+        path: 'on-tap-ly-thuyet/:id',
         loadChildren: () =>
           import('./competitors/competitors.module').then((m) => m.CompetitorsModule),
       },
@@ -42,7 +42,7 @@ const routes: Routes = [
       },
       //Bài kiểm tra ngoài hệ thống
       {
-        path: 'inventory',
+        path: 'on-tap-van-dung',
         loadChildren: () =>
           import('./inventory/inventory.module').then((m) => m.InventoryModule),
       },
@@ -79,7 +79,7 @@ const routes: Routes = [
       },
      // Chủ đề
       {
-        path: 'outlet-management',
+        path: 'danh-sach-chu-de',
         loadChildren: () =>
           import('./outlet-management/outlet-management.module').then((m) => m.OutletManagementModule),
       },
@@ -92,7 +92,7 @@ const routes: Routes = [
 
     //Chương
       {
-        path: 'product-management',
+        path: 'danh-sach-chuong',
         loadChildren: () =>
           import('./product-management/product-management.module').then((m) => m.ProductManagementModule),
       },

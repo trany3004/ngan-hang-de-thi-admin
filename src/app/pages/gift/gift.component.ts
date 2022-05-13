@@ -2,7 +2,7 @@ import {
   AfterViewInit,
   Component, Inject, OnDestroy, OnInit, ViewChild,
 } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -16,6 +16,8 @@ import { switchMap } from 'rxjs/operators';
 import { DatePipe } from '@angular/common';
 import { GiftModifyDialogComponent } from './gift-modify-dialog/gift-modify-dialog.component';
 
+import { ToastrService } from 'ngx-toastr';
+
 
 @Component({
   selector: 'app-gift',
@@ -23,35 +25,64 @@ import { GiftModifyDialogComponent } from './gift-modify-dialog/gift-modify-dial
   styleUrls: ['./gift.component.scss'],
 })
 export class GiftComponent implements OnInit, AfterViewInit, OnDestroy{
-  displayedColumns: string[] = ['createdAt', 'outlet', 'product', 'quantity', 'customerName', 'customerMobile', 'receipt', 'action'];
-  hidePagination = false;
-  pageSizeOptions = [5, 10, 25, 100];
-  loadSubscription: Subscription;
-  // cities = [];
-  // regions = [];
-  filter: any = {
-    page: 0,
-    pageSize: this.pageSizeOptions[0],
-    startDate_gte: null,
-    endDate_lt: null
-  };
-  totalCount = 0;
-  loading = false;
 
-  filterTimeout;
-  
-  exporting = false;
-  dataNormal: any[] = [];
-
-  dataSource = new MatTableDataSource([]);
 
 
   @ViewChild(MatSort, { static: true }) sort: MatSort;
+  displayedColumns: string[] = ['stt', 'name', 'fullname', 'matkhau', 'email', 'diachi', 'action'];
+  eventSubscription: Subscription;
+  pageSizeOptions = [5, 10, 25, 100];
+  dataSource = new MatTableDataSource([]);
+  totalCount = 0;
+  filter: any = {
+    page: 0,
+    pageSize: this.pageSizeOptions[0],
+    name_contains: null
+  };
+  formGroup: FormGroup;
+  searchInfo: String = "";
+  searchTimeout;
+  exporting = false;
+  loading = false;
+  
+  userSubscription: Subscription;
+  loadSubscription: Subscription;
+  // cities = [];
+  // regions = [];
+  
+
+  filterTimeout;
+  
+
+ 
+ 
+
+  ngAfterViewInit() {
+    this.dataSource.sort = this.sort;
+  }
+  ngOnInit() {
+    this.init();
+  }
+
+  //call API
+  init() {
+    this.loading = true;
+    //ham call API
+    this.eventSubscription = this.giftService.getUser()
+      .subscribe((data) => {
+        this.dataSource = new MatTableDataSource(data);
+        this.dataSource.sort = this.sort;
+        this.totalCount = data.length;
+        this.loading = false;
+      }, _ => this.loading = false);
+  }
+
 
 
   constructor(public dialog: MatDialog, private exportService: ExportService,
     private giftService: GiftService, private outletService: OutletService,
-    private datePipe: DatePipe) { }
+    private datePipe: DatePipe,
+    private toastr: ToastrService) { }
 
     createPg() {
       const dialogRef = this.dialog.open(GiftComponent, {
@@ -61,80 +92,93 @@ export class GiftComponent implements OnInit, AfterViewInit, OnDestroy{
         }
       })
     };
-   
+    modify(element) {
+      const dialogRef = this.dialog.open(GiftCreateDialogComponent, {
+        width: '50%',
+        data: {
+          type: 'update',
+          data: element
+        }
+      });
+  
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          this.filter.page = 0;
+          this.filter.pageSize = this.pageSizeOptions[0];
+          this.init();
+        }
+      });
+    }
+  
+    deleteObject(id) {
+      const dialogRef = this.dialog.open(DeleteDialogComponent, {
+        data: {
+          header: 'Xóa tài khoản',
+          title: 'Bạn có muốn xóa tài khoản này không?'
+        }
+      });
+  
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          this.giftService.xoaUser(id).subscribe(res => {
+            this.filter.page = 0;
+            this.filter.pageSize = this.pageSizeOptions[0];
+            this.init();
+          });
+        }
+      });
+    }
+  
+  
     ngOnDestroy(): void {
       if(this.loadSubscription) {
         this.loadSubscription.unsubscribe();
       }
     }
     
-    ngAfterViewInit() {
-      this.dataSource.sort = this.sort;
-    }
-    ngOnInit(): void {
-      this.init();
-    }
-   
-  init() {
-    this.loading = true;
-    if (this.loadSubscription) {
-      this.loadSubscription.unsubscribe();
-    }
-    this.loadSubscription = forkJoin([
-      this.giftService.fetch(this.filter),
-      this.giftService.getTotalRecords(this.filter)
-    ]).subscribe(([checkins, total]) => {
-      // this.mapData(checkins);
-      this.totalCount = total;
-      this.loading = false;
-    }, _ => {
-      this.loading = false;
-    })
-  }
-  
-
+ 
   viewImage(url, title) {
     window.open(`${window.location.host}${url}`);
   }
  
 
-   export() {
-    this.exporting = true;
-    const fileName = 'gift-reports';
-    const header: any = {
-      id: 'Report Id',
-      createdAt: 'Date',
-      outlet: 'OutletName',
-      product: 'ProductName',
-      user: 'PGName',
-      customerName: 'CustomerName',
-      customerMobile: 'PhoneNumber',
-      quantity: 'Quantity',
-      note: 'Note',
-      receipt: 'Receipt Photo'
-    }
-    let data = [header];
-    if (this.hidePagination) {
-      data = data.concat(this.dataNormal);
-      this.exportService.exportExcel(data, fileName, true, [fileName]);
-      this.exporting = false;
-      return;
-    } else {
-      this.exporting = true;
-      let newFilter = {...this.filter};
-      delete newFilter.page;
-      delete newFilter.pageSize;
-      this.giftService.fetch(newFilter)
-        .subscribe((rs) => {
-        let dataExport = this.mappingDataForExport(rs);
-        data = data.concat(dataExport);
-        this.exportService.exportExcel(data, fileName, true, [fileName]);
-        this.exporting = false;
-      }, _ => {
-        this.exporting = false;
-      })
-    }
-  }
+  //  export() {
+  //   this.exporting = true;
+  //   const fileName = 'gift-reports';
+  //   const header: any = {
+  //     id: 'Report Id',
+  //     createdAt: 'Date',
+  //     outlet: 'OutletName',
+  //     product: 'ProductName',
+  //     user: 'PGName',
+  //     customerName: 'CustomerName',
+  //     customerMobile: 'PhoneNumber',
+  //     quantity: 'Quantity',
+  //     note: 'Note',
+  //     receipt: 'Receipt Photo'
+  //   }
+  //   let data = [header];
+  //   if (this.hidePagination) {
+  //     data = data.concat(this.dataNormal);
+  //     this.exportService.exportExcel(data, fileName, true, [fileName]);
+  //     this.exporting = false;
+  //     return;
+  //   } else {
+  //     this.exporting = true;
+  //     let newFilter = {...this.filter};
+  //     delete newFilter.page;
+  //     delete newFilter.pageSize;
+  //     this.giftService.fetch(newFilter)
+  //       .subscribe((rs) => {
+  //       let dataExport = this.mappingDataForExport(rs);
+  //       data = data.concat(dataExport);
+  //       this.exportService.exportExcel(data, fileName, true, [fileName]);
+  //       this.exporting = false;
+  //     }, _ => {
+  //       this.exporting = false;
+  //     })
+  //   }
+  // }
 
   
 
@@ -236,19 +280,7 @@ export class GiftComponent implements OnInit, AfterViewInit, OnDestroy{
   //   }
   // }
 
-  modify(element) {
-    const dialogRef = this.dialog.open(GiftModifyDialogComponent, {
-      data: element,
-      width: '50%',
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.init();
-      }
-    });
-  }
-
+  
   deleteItem({id}) {
     const dialogRef = this.dialog.open(DeleteDialogComponent, {
       data: {

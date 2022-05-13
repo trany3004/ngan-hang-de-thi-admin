@@ -52,6 +52,7 @@ import { ReportedMonthTargetGroupComponent } from './report-month-target-group/r
     WidgetsModule,
     NgApexchartsModule,
     CurrencyModule,
+ 
     RouterModule.forChild([
       {
         path: '',

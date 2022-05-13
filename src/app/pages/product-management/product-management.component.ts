@@ -140,8 +140,8 @@ export class ProductManagementComponent implements OnInit, AfterViewInit, OnDest
   deleteObject(id) {
     const dialogRef = this.dialog.open(DeleteDialogComponent, {
       data: {
-        header: 'Xóa chủ đề',
-        title: 'Bạn có muốn xóa chủ đề này không?'
+        header: 'Xóa chương',
+        title: 'Bạn có muốn xóa chương này không?'
       }
     });
 

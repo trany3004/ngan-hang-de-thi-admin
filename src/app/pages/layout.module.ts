@@ -37,6 +37,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatSortModule } from '@angular/material/sort';
 import { MatPaginatorModule } from '@angular/material/paginator';
 
+
 @NgModule({
   declarations: [
     LayoutComponent,
@@ -81,6 +82,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     MatMomentDateModule,
     MatSortModule,
     MatNativeDateModule,
+   
     // PGCommonModule,
   ],
   exports: [

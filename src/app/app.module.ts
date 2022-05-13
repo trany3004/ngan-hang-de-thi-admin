@@ -8,7 +8,7 @@ import { InlineSVGModule } from 'ng-inline-svg';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 // Highlight JS
-import { HighlightModule, HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
+
 import xml from 'highlight.js/lib/languages/xml';
 import json from 'highlight.js/lib/languages/json';
 import scss from 'highlight.js/lib/languages/scss';
@@ -17,6 +17,7 @@ import { SplashScreenModule } from './_metronic/partials/layout/splash-screen/sp
 import { AuthenticationInterceptor } from './services/authentication.interceptor';
 import { ErrorInterceptor } from './services/error.interceptor';
 import { ToastrModule } from 'ngx-toastr';
+
 
 
 
@@ -37,7 +38,7 @@ export function getHighlightLanguages() {
     SplashScreenModule,
     TranslateModule.forRoot(),
     HttpClientModule,
-    HighlightModule,
+   
     ClipboardModule,
     AppRoutingModule,
     InlineSVGModule.forRoot(),
@@ -45,12 +46,12 @@ export function getHighlightLanguages() {
     // NgbModule
   ],
   providers: [
-    {
-      provide: HIGHLIGHT_OPTIONS,
-      useValue: {
-        languages: getHighlightLanguages,
-      }
-    },
+    // {
+    //   provide: HIGHLIGHT_OPTIONS,
+    //   useValue: {
+    //     languages: getHighlightLanguages,
+    //   }
+    // },
       // { provide: HTTP_INTERCEPTORS, useClass: AuthenticationInterceptor, multi: true },
       // { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
   ],

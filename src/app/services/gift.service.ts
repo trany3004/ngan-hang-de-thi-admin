@@ -16,7 +16,24 @@ export class GiftService extends BaseService {
   constructor(private http: HttpClient) {
     super();
   }
-
+  getUser(): Observable<any[]> {
+    // CAll API get chu ded
+     return this.http.get<any[]>(`/api/v1/user`);
+   }
+ 
+   createUser(data): Observable<any> {
+     return this.http.post<any>(`/api/v1/user`, data);
+   }
+ 
+   updateUser(id, data): Observable<any> {
+     return this.http.put<any>(`/api/v1/user/${id}`, data);
+   }
+ 
+   xoaUser(id): Observable<any> {
+     return this.http.delete<any>(`/api/v1/user/${id}`);
+   }
+ 
+   
   fetch(filter?: any): Observable<Gift[]> {
     let query = '';
     if (filter) {

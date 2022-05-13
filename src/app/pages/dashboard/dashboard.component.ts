@@ -5,6 +5,7 @@ import { forkJoin, Subscription } from 'rxjs';
 import { DashboardService } from 'src/app/services/dashboard.service';
 import { CurrencyService } from '../common/currency-pipe/currency-pipe.service';
 
+
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
